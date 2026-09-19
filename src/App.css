@@ -1,184 +1,237 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+* {
+  box-sizing: border-box;
 }
 
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+body {
+  margin: 0;
+  background: #fcfcfc;
+  color: #1a1b1c;
+  font-family: "Roobert TRIAL", Arial, Helvetica, sans-serif;
 }
 
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+button {
+  font: inherit;
 }
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
+.page {
   position: relative;
   width: 100%;
+  min-height: 100vh;
+  aspect-ratio: 2 / 1;
+  background: #fcfcfc;
+  overflow: hidden;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
+.header {
+  height: 64px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+}
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
-  }
+.brand {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+}
+
+.section-label {
+  color: #777;
+}
+
+.enter-code {
+  border: none;
+  background: #1a1b1c;
+  color: white;
+  padding: 10px 14px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.intro-content {
+  padding: 16px 32px;
+}
+
+.eyebrow {
+  position: absolute;
+  top: 86px;
+  left: 32px;
+  margin: 0;
+
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* Figma rhombus group:
+   762 x 762
+   left 579
+   top 99
+*/
+
+.diamond-wrap {
+  position: absolute;
+
+  width: 39.6875%;
+  aspect-ratio: 1;
+
+  left: 30.15625%;
+  top: 10.3125%;
+}
+
+.diamond-wrap {
+  position: absolute;
+  top: 47%;
+  left: 50%;
+  width: 762px;
+  height: 762px;
+  transform: translate(-50%, -50%);
+}
+
+.diamond {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 2px dashed #a0a4ab;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.diamond-one {
+  width: 28.07vw;
+  height: 28.07vw;
+  opacity: 0.3;
+}
+
+.diamond-two {
+  width: 25.11vw;
+  height: 25.11vw;
+  opacity: 0.6;
+}
+
+.diamond-three {
+  width: 22.19vw;
+  height: 22.19vw;
+}
+
+.name-prompt {
+  font-family: "Roobert TRIAL", Arial, Helvetica, sans-serif;
+ 
+  position: absolute;
+
+  width: 21.875%;
+  height: 65px;
+
+  left: 39.0625%;
+  top: 46%;
+
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #1a1b1c;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  cursor: pointer;
+}
+
+.name-prompt span {
+  position: absolute;
+  top: -26px;
+
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: rgba(26, 27, 28, 0.4);
+}
+
+.name-prompt-button strong {
+  font-size: 60px;
+  line-height: 64px;
+  font-weight: 400;
+  letter-spacing: -0.07em;
+  color: #1a1b1c;
+  border-bottom: 1px solid #1a1b1c;
+  white-space: nowrap;
+}
+
+.name-prompt-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #1a1b1c;
+  font: inherit;
+}
+
+.name-input {
+  width: 420px;
+  height: 64px;
+  border: none;
+  border-bottom: 1px solid #1a1b1c;
+  outline: none;
+  background: transparent;
+
+  font-size: 60px;
+  line-height: 64px;
+  font-weight: 400;
+  letter-spacing: -0.07em;
+  text-align: center;
+  color: #1a1b1c;
+}
+
+  .location-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.location-complete span {
+  font-size: 14px;
+  line-height: 24px;
+  color: rgba(26, 27, 28, 0.4);
+}
+
+.location-complete strong {
+  font-size: 60px;
+  line-height: 64px;
+  font-weight: 400;
+  letter-spacing: -0.07em;
+  border-bottom: 1px solid #1a1b1c;
+}
+
+.proceed-button {
+  position: absolute;
+  right: 32px;
+  bottom: 24px;
+  border: none;
+  background: transparent;
+  color: #1a1b1c;
+  cursor: pointer;
+}
+
+.image-source-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 32px;
+}
+
+.back-button {
+  position: absolute;
+  left: 32px;
+  bottom: 24px;
+
+  border: none;
+  background: transparent;
+  color: #1a1b1c;
+  cursor: pointer;
 }
