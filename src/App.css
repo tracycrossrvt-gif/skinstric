@@ -245,3 +245,77 @@ button {
   color: #b00020;
   font-size: 14px;
 }
+
+/* 005 */
+
+.image-source-screen {
+  position: absolute;
+  inset: 0;
+}
+
+.source-option {
+  position: absolute;
+  top: 25%;
+  height: 50.21%;
+
+  border: none;
+  background: transparent;
+  color: #1a1b1c;
+  cursor: pointer;
+}
+
+.camera-option {
+  left: 12.45%;
+  width: 27.08%;
+}
+
+.gallery-option {
+  left: 62.14%;
+  width: 25.42%;
+}
+
+.source-diamond {
+  position: relative;
+  width: 360px;
+  height: 360px;
+  display: grid;
+  place-items: center;
+}
+
+.source-diamond .diamond-one {
+  width: 255px;
+  height: 255px;
+}
+
+.source-diamond .diamond-two {
+  width: 228px;
+  height: 228px;
+}
+
+.source-diamond .diamond-three {
+  width: 201px;
+  height: 201px;
+}
+
+.source-icon {
+  position: relative;
+  z-index: 2;
+  font-size: 44px;
+}
+
+.source-icon-image {
+  position: absolute;
+  width: 7.08vw;
+  height: 7.08vw;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.source-label {
+  font-size: 16px;
+  line-height: 22px;
+  text-align: left;
+  font-weight: 600;
+}

@@ -95,9 +95,39 @@ function handleLocationKeyDown(event) {
       <p className="eyebrow">TO START ANALYSIS</p>
 
       {step === "image-source" ? (
-        <div className="image-source-placeholder">
-          IMAGE SOURCE
-        </div>
+       <div className="image-source-screen">
+  <button className="source-option camera-option">
+    <div className="source-diamond">
+  <div className="diamond diamond-one" />
+  <div className="diamond diamond-two" />
+  <div className="diamond diamond-three" />
+  <img
+  className="source-icon-image"
+  src="/camera.svg"
+  alt="Camera"
+/>
+</div>
+    <span className="source-label">
+      ALLOW A.I. TO
+      <br />
+      SCAN YOUR FACE
+    </span>
+  </button>
+
+  <button className="source-option gallery-option">
+    <div className="source-diamond">
+  <div className="diamond diamond-one" />
+  <div className="diamond diamond-two" />
+  <div className="diamond diamond-three" />
+  <span className="source-icon">◉</span>
+</div>
+    <span className="source-label">
+      ALLOW A.I.
+      <br />
+      ACCESS GALLERY
+    </span>
+  </button>
+</div> 
       ) : (
         <>
           <div className="diamond-wrap">
