@@ -235,3 +235,13 @@ button {
   color: #1a1b1c;
   cursor: pointer;
 }
+
+.api-error {
+  position: absolute;
+  bottom: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: #b00020;
+  font-size: 14px;
+}

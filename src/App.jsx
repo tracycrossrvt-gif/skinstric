@@ -6,24 +6,82 @@ function App() {
   const [name, setName] = useState("");
   const [step, setStep] = useState("name");
   const [location, setLocation] = useState("");
+  const [apiError, setApiError] = useState("");
+
+function isValidName(value) {
+  return /^[A-Za-z\s'-]+$/.test(value.trim());
+}
+
+function isValidLocation(value) {
+  return /^[A-Za-z\s.'-]+$/.test(value.trim());
+}
 
   function handleNameKeyDown(event) {
-    if (event.key === "Enter" && name.trim() !== "") {
-      setStep("location");
-      setIsTyping(false);
-    }
+  if (event.key === "Enter" && isValidName(name)) {
+    setStep("location");
+    setIsTyping(false);
   }
+}
 
-  function handleLocationKeyDown(event) {
-    if (event.key === "Enter" && location.trim() !== "") {
-      setIsTyping(false);
-      setStep("complete");
-    }
+function handleLocationKeyDown(event) {
+  if (event.key === "Enter" && isValidLocation(location)) {
+    setIsTyping(false);
+    setStep("complete");
   }
+}
 
-  function handleProceed() {
+  async function handleProceed() {
+  setApiError("");
+
+  try {
+    const response = await fetch(
+      "https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseOne",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          location: location.trim(),
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if (!response.ok) {
+      throw new Error("Failed to submit user information");
+    }
+
     setStep("image-source");
+  } catch (error) {
+    console.error("Phase 1 API error:", error);
+    setApiError("Something went wrong. Please try again.");
   }
+}
+
+  function handleBack(event) {
+  event.preventDefault();
+
+  if (step === "image-source") {
+    setStep("complete");
+    return;
+  }
+
+  if (step === "complete") {
+    setStep("location");
+    setIsTyping(false);
+    return;
+  }
+
+  if (step === "location") {
+    setStep("name");
+    setIsTyping(false);
+  }
+}
 
   return (
     <main className="page">
@@ -108,7 +166,19 @@ function App() {
         </>
       )}
 
-      <button className="back-button">◇ BACK</button>
+      <button
+  type="button"
+  className="back-button"
+  onClick={handleBack}
+>
+  ◇ BACK
+</button>
+
+      {apiError && (
+  <p className="api-error">
+    {apiError}
+  </p>
+)}
     </main>
   );
 }
