@@ -73,16 +73,6 @@ button {
 
 .diamond-wrap {
   position: absolute;
-
-  width: 39.6875%;
-  aspect-ratio: 1;
-
-  left: 30.15625%;
-  top: 10.3125%;
-}
-
-.diamond-wrap {
-  position: absolute;
   top: 47%;
   left: 50%;
   width: 762px;
@@ -217,14 +207,6 @@ button {
   cursor: pointer;
 }
 
-.image-source-placeholder {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 32px;
-}
-
 .back-button {
   position: absolute;
   left: 32px;
@@ -297,12 +279,6 @@ button {
   height: 201px;
 }
 
-.source-icon {
-  position: relative;
-  z-index: 2;
-  font-size: 44px;
-}
-
 .source-icon-image {
   position: absolute;
   width: 7.08vw;
@@ -317,5 +293,106 @@ button {
   font-size: 16px;
   line-height: 22px;
   text-align: left;
+  font-weight: 600;
+}
+
+.analysis-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.analysis-loading p {
+  position: relative;
+  z-index: 2;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.loading-diamond {
+  position: absolute;
+  border: 2px dashed #a0a4ab;
+  transform: rotate(45deg);
+}
+
+.analysis-loading .diamond-one {
+  width: 260px;
+  height: 260px;
+  opacity: 0.3;
+}
+
+.analysis-loading .diamond-two {
+  width: 220px;
+  height: 220px;
+  opacity: 0.6;
+}
+
+.analysis-loading .diamond-three {
+  width: 180px;
+  height: 180px;
+}
+
+.analysis-screen {
+  position: absolute;
+  inset: 64px 0 0;
+}
+
+.analysis-heading {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.analysis-heading strong {
+  font-size: 16px;
+}
+
+.analysis-grid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 360px;
+  height: 360px;
+  transform: translate(-50%, -50%) rotate(45deg);
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.analysis-tile {
+  border: none;
+  background: #f1f1f1;
+  color: #1a1b1c;
+  cursor: pointer;
+
+  display: grid;
+  place-items: center;
+
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  text-align: center;
+
+  transform: rotate(-45deg) scale(0.71);
+}
+
+.demographics-tile {
+  background: #dedede;
+}
+
+.summary-button {
+  position: absolute;
+  right: 32px;
+  bottom: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
   font-weight: 600;
 }
