@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 function App() {
@@ -9,8 +9,32 @@ function App() {
   const [apiError, setApiError] = useState("");
   const [image, setImage] = useState("");
   const fileInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
   const [analysisData, setAnalysisData] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [cameraActive, setCameraActive] = useState(false);
+  const [cameraError, setCameraError] = useState("");
+  const [activeCategory, setActiveCategory] = useState("race");
+  const [selectedValues, setSelectedValues] = useState({
+  race: "",
+  age: "",
+  gender: "",
+});
+
+  useEffect(() => {
+  if (!cameraActive || !videoRef.current || !streamRef.current) {
+    return;
+  }
+
+  const video = videoRef.current;
+
+  video.srcObject = streamRef.current;
+
+  video.play().catch((error) => {
+    console.error("Video playback error:", error);
+  });
+}, [cameraActive]);
 
   function isValidName(value) {
     return /^[A-Za-z\s'-]+$/.test(value.trim());
@@ -68,24 +92,41 @@ function App() {
   }
 
   function handleBack(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    if (step === "image-source") {
-      setStep("complete");
-      return;
-    }
-
-    if (step === "complete") {
-      setStep("location");
-      setIsTyping(false);
-      return;
-    }
-
-    if (step === "location") {
-      setStep("name");
-      setIsTyping(false);
-    }
+  if (cameraActive) {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    setCameraActive(false);
+    return;
   }
+
+  if (step === "demographics") {
+    setStep("analysis");
+    return;
+  }
+
+  if (step === "analysis") {
+    setStep("image-source");
+    return;
+  }
+
+  if (step === "image-source") {
+    setStep("complete");
+    return;
+  }
+
+  if (step === "complete") {
+    setStep("location");
+    setIsTyping(false);
+    return;
+  }
+
+  if (step === "location") {
+    setStep("name");
+    setIsTyping(false);
+  }
+}
 
   function handleImageUpload(event) {
     const file = event.target.files?.[0];
@@ -107,11 +148,61 @@ function App() {
     reader.readAsDataURL(file);
   }
 
+async function handleCameraStart() {
+  setCameraError("");
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false,
+    });
+
+    streamRef.current = stream;
+    setCameraActive(true);
+  } catch (error) {
+    console.error("Camera error:", error);
+    setCameraError("Unable to access camera.");
+  }
+}
+
+  function handleCaptureSelfie() {
+  const video = videoRef.current;
+
+  if (!video || !video.videoWidth || !video.videoHeight) {
+    setCameraError("Camera is not ready yet. Please try again.");
+    return;
+  }
+
+  const canvas = document.createElement("canvas");
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  const context = canvas.getContext("2d");
+
+  if (!context) {
+    setCameraError("Unable to capture image.");
+    return;
+  }
+
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  const base64Image = canvas.toDataURL("image/jpeg", 0.92);
+
+  setImage(base64Image);
+
+  streamRef.current?.getTracks().forEach((track) => track.stop());
+  streamRef.current = null;
+  setCameraActive(false);
+
+  handlePhaseTwo(base64Image);
+}
+
   async function handlePhaseTwo(imageData) {
   setIsAnalyzing(true);
 
   try {
-    const base64Image = image.split(",")[1];
+    const base64Image = imageData.split(",")[1];
 
     const response = await fetch(
       "https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseTwo",
@@ -143,6 +234,21 @@ function App() {
   }
 }
 
+const sortedScores = analysisData?.[activeCategory]
+  ? Object.entries(analysisData[activeCategory]).sort(
+      ([, scoreA], [, scoreB]) => scoreB - scoreA
+    )
+  : [];
+
+const topPrediction = sortedScores[0];
+
+function handleScoreSelect(label) {
+  setSelectedValues((current) => ({
+    ...current,
+    [activeCategory]: label,
+  }));
+}
+
   return (
     <main className="page">
       <header className="header">
@@ -152,9 +258,11 @@ function App() {
   </div>
 </header>
 
-{step !== "analysis" && !isAnalyzing && (
-  <p className="eyebrow">TO START ANALYSIS</p>
-)}
+{step !== "analysis" &&
+  step !== "demographics" &&
+  !isAnalyzing && (
+    <p className="eyebrow">TO START ANALYSIS</p>
+  )}
 
 {isAnalyzing ? (
   <div className="analysis-loading">
@@ -215,11 +323,109 @@ function App() {
       GET SUMMARY ◇
     </button>
   </div>
-) : step === "image-source" ? (
+
+  ) : step === "demographics" ? (
+  <div className="demographics-screen">
+    <div className="demographics-heading">
+      <strong>DEMOGRAPHICS</strong>
+      <span>PREDICTED RACE &amp; AGE</span>
+    </div>
+
+    <div className="demographics-layout">
+      <div className="category-tabs">
+        <button
+          type="button"
+          className={activeCategory === "race" ? "active" : ""}
+          onClick={() => setActiveCategory("race")}
+        >
+          RACE
+        </button>
+
+        <button
+          type="button"
+          className={activeCategory === "age" ? "active" : ""}
+          onClick={() => setActiveCategory("age")}
+        >
+          AGE
+        </button>
+
+        <button
+          type="button"
+          className={activeCategory === "gender" ? "active" : ""}
+          onClick={() => setActiveCategory("gender")}
+        >
+          SEX
+        </button>
+      </div>
+
+      <div className="prediction-focus">
+        <strong>
+          {selectedValues[activeCategory] || topPrediction?.[0] || "—"}
+        </strong>
+
+        <span>
+          {(() => {
+            const selectedLabel =
+              selectedValues[activeCategory] || topPrediction?.[0];
+
+            const selectedScore =
+              analysisData?.[activeCategory]?.[selectedLabel];
+
+            return selectedScore !== undefined
+              ? `${(selectedScore * 100).toFixed(2)}%`
+              : "—";
+          })()}
+        </span>
+      </div>
+
+      <div className="score-list">
+        {sortedScores.map(([label, score]) => (
+          <button
+            type="button"
+            className={`score-row ${
+              (selectedValues[activeCategory] || topPrediction?.[0]) === label
+                ? "selected"
+                : ""
+            }`}
+            key={label}
+            onClick={() => handleScoreSelect(label)}
+          >
+            <span>{label}</span>
+            <span>{(score * 100).toFixed(2)}%</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+    ) : cameraActive ? (
+  <div className="camera-screen">
+    <video
+      ref={videoRef}
+      autoPlay
+      playsInline
+      muted
+      className="camera-preview"
+    />
+
+    <button
+      type="button"
+      className="capture-button"
+      onClick={handleCaptureSelfie}
+    >
+      CAPTURE
+    </button>
+
+    {cameraError && (
+      <p className="camera-error">{cameraError}</p>
+    )}
+  </div>
+    ) : step === "image-source" ? (
         <div className="image-source-screen">
           <button
             type="button"
             className="source-option camera-option"
+            onClick={handleCameraStart}
           >
             <div className="source-diamond">
               <div className="diamond diamond-one" />
