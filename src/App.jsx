@@ -254,12 +254,17 @@ function handleScoreSelect(label) {
       <header className="header">
   <div className="brand">
     <span>SKINSTRIC</span>
-    <span className="section-label">[ INTRO ]</span>
+    <span className="section-label">
+  {step === "analysis" || step === "demographics"
+    ? "[ ANALYSIS ]"
+    : "[ INTRO ]"}
+</span>
   </div>
 </header>
 
 {step !== "analysis" &&
   step !== "demographics" &&
+  !cameraActive &&
   !isAnalyzing && (
     <p className="eyebrow">TO START ANALYSIS</p>
   )}
@@ -282,46 +287,58 @@ function handleScoreSelect(label) {
     </div>
 
     <div className="analysis-grid">
+  <div className="analysis-frame analysis-frame-one" />
+  <div className="analysis-frame analysis-frame-two" />
+  <div className="analysis-frame analysis-frame-three" />
+
+  <button
+    type="button"
+    className="analysis-tile demographics-tile"
+    onClick={() => setStep("demographics")}
+  >
+    DEMOGRAPHICS
+  </button>
+      
       <button
   type="button"
-  className="analysis-tile demographics-tile"
-  onClick={() => setStep("demographics")}
+  className="analysis-tile skin-tile"
 >
-  DEMOGRAPHICS
+  <span>
+    SKIN TYPE
+    <br />
+    DETAILS
+  </span>
 </button>
 
       <button
-        type="button"
-        className="analysis-tile skin-tile"
-      >
-        SKIN TYPE
-        <br />
-        DETAILS
-      </button>
+  type="button"
+  className="analysis-tile concerns-tile"
+>
+  <span>
+    COSMETIC
+    <br />
+    CONCERNS
+  </span>
+</button>
 
       <button
-        type="button"
-        className="analysis-tile concerns-tile"
-      >
-        COSMETIC
-        <br />
-        CONCERNS
-      </button>
-
-      <button
-        type="button"
-        className="analysis-tile weather-tile"
-      >
-        WEATHER
-      </button>
+  type="button"
+  className="analysis-tile weather-tile"
+>
+  <span>WEATHER</span>
+</button>
     </div>
 
     <button
-      type="button"
-      className="summary-button"
-    >
-      GET SUMMARY ◇
-    </button>
+  type="button"
+  className="summary-button"
+>
+  <span className="summary-text">GET SUMMARY</span>
+
+  <span className="summary-icon">
+    <span className="summary-arrow">▶</span>
+  </span>
+</button>
   </div>
 
   ) : step === "demographics" ? (
@@ -358,25 +375,21 @@ function handleScoreSelect(label) {
         </button>
       </div>
 
-      <div className="prediction-focus">
-        <strong>
-          {selectedValues[activeCategory] || topPrediction?.[0] || "—"}
-        </strong>
+      <div className="confidence-circle">
+  <span>
+    {(() => {
+      const selectedLabel =
+        selectedValues[activeCategory] || topPrediction?.[0];
 
-        <span>
-          {(() => {
-            const selectedLabel =
-              selectedValues[activeCategory] || topPrediction?.[0];
+      const selectedScore =
+        analysisData?.[activeCategory]?.[selectedLabel];
 
-            const selectedScore =
-              analysisData?.[activeCategory]?.[selectedLabel];
-
-            return selectedScore !== undefined
-              ? `${(selectedScore * 100).toFixed(2)}%`
-              : "—";
-          })()}
-        </span>
-      </div>
+      return selectedScore !== undefined
+        ? `${(selectedScore * 100).toFixed(2)}%`
+        : "—";
+    })()}
+  </span>
+</div>
 
       <div className="score-list">
         {sortedScores.map(([label, score]) => (
@@ -544,12 +557,16 @@ function handleScoreSelect(label) {
       )}
 
       <button
-        type="button"
-        className="back-button"
-        onClick={handleBack}
-      >
-        ◇ BACK
-      </button>
+  type="button"
+  className="back-button"
+  onClick={handleBack}
+>
+  <span className="back-icon">
+    <span className="back-arrow">◀</span>
+  </span>
+
+  <span className="back-text">BACK</span>
+</button>
 
       {apiError && (
         <p className="api-error">
