@@ -6,7 +6,6 @@ function App() {
   const [step, setStep] = useState("name");
   const [location, setLocation] = useState("");
   const [apiError, setApiError] = useState("");
-  const [image, setImage] = useState("");
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -144,7 +143,6 @@ function App() {
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64Image = reader.result;
-      setImage(base64Image);
       handlePhaseTwo(base64Image);
     };
     reader.readAsDataURL(file);
@@ -192,7 +190,6 @@ function App() {
     }
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     const base64Image = canvas.toDataURL("image/jpeg", 0.92);
-    setImage(base64Image);
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
     setCameraActive(false);
