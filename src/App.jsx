@@ -6,7 +6,6 @@ function App() {
   const [step, setStep] = useState("name");
   const [location, setLocation] = useState("");
   const [apiError, setApiError] = useState("");
-  const [image, setImage] = useState("");
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -144,7 +143,6 @@ function App() {
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64Image = reader.result;
-      setImage(base64Image);
       handlePhaseTwo(base64Image);
     };
     reader.readAsDataURL(file);
@@ -192,7 +190,6 @@ function App() {
     }
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     const base64Image = canvas.toDataURL("image/jpeg", 0.92);
-    setImage(base64Image);
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
     setCameraActive(false);
@@ -221,9 +218,12 @@ function App() {
         throw new Error("Failed to analyze image");
       }
       setAnalysisData(data.data);
+      setSelectedValues(getTopSelections(data.data));
+      setActiveCategory("race");
       setStep("analysis");
     } catch (error) {
       console.error("Phase 2 API error:", error);
+      setStep("image-source");
     } finally {
       setIsAnalyzing(false);
     }
@@ -240,11 +240,11 @@ function App() {
       [activeCategory]: label,
     }));
   }
-  const getTopSelections = () => {
+  const getTopSelections = (data = analysisData) => {
     const categories = ["race", "age", "gender"];
     return Object.fromEntries(
       categories.map((category) => {
-        const entries = Object.entries(analysisData?.[category] || {}).sort(
+        const entries = Object.entries(data?.[category] || {}).sort(
           (a, b) => b[1] - a[1]
         );
         return [category, entries[0]?.[0] || ""];
@@ -257,12 +257,22 @@ function App() {
   const handleDemographicsConfirm = () => {
     setStep("analysis");
   };
+  function categoryLabel(category) {
+    return category === "gender" ? "SEX" : category.toUpperCase();
+  }
+  const topSelections = getTopSelections();
+  const selectedLabel = selectedValues[activeCategory] || topPrediction?.[0];
+  const selectedScore = analysisData?.[activeCategory]?.[selectedLabel] ?? 0;
+  const percent = selectedScore * 100;
+  const radius = 47;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percent / 100) * circumference;
   return (
     <main className="page">
-      {!(step === "camera" && cameraStage === "setup") && (
+      {!(step === "camera" && cameraStage === "setup") && !isAnalyzing && (
         <header className="header">
           <div className="brand">
-            <span>SKINSTRIC</span>
+            <span className="brand-name">SKINSTRIC</span>
             <span className="section-label">
               {step === "analysis" || step === "demographics"
                 ? "[ ANALYSIS ]"
@@ -278,10 +288,17 @@ function App() {
         !isAnalyzing && <p className="eyebrow">TO START ANALYSIS</p>}
       {isAnalyzing ? (
         <div className="analysis-loading">
-          <div className="loading-diamond diamond-one" />
-          <div className="loading-diamond diamond-two" />
-          <div className="loading-diamond diamond-three" />
-          <p>PREPARING YOUR ANALYSIS...</p>
+          <div className="rotating-frames" aria-hidden="true">
+            <span className="rotating-frame rotating-frame--outer" />
+            <span className="rotating-frame rotating-frame--middle" />
+            <span className="rotating-frame rotating-frame--inner" />
+          </div>
+          <p className="analysis-loading__text">PREPARING YOUR ANALYSIS ...</p>
+          <div className="loading-dots" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
         </div>
       ) : step === "analysis" ? (
         <div className="analysis-screen">
@@ -321,8 +338,8 @@ function App() {
           </div>
           <button type="button" className="summary-button">
             <span className="summary-text">GET SUMMARY</span>
-            <span className="summary-icon">
-              <span className="summary-arrow">▶</span>
+            <span className="diamond-icon">
+              <span className="diamond-icon__arrow">▶</span>
             </span>
           </button>
         </div>
@@ -331,19 +348,19 @@ function App() {
           <div className="demographics-heading">
             <span className="analysis-eyebrow">A.I. ANALYSIS</span>
             <div className="demographics-title-row">
-  <strong>DEMOGRAPHICS</strong>
-
-        <div className="demographics-nav" aria-hidden="true">
-  <span className="demographics-nav-icon">
-    <span className="demographics-nav-arrow">◀</span>
-  </span>
-
-  <span className="demographics-nav-icon">
-    <span className="demographics-nav-arrow">▶</span>
-  </span>
-</div>
-</div>
-            <span>PREDICTED RACE &amp; AGE</span>
+              <strong className="demographics-title">DEMOGRAPHICS</strong>
+              <div className="demographics-nav" aria-hidden="true">
+                <span className="diamond-icon">
+                  <span className="diamond-icon__arrow">◀</span>
+                </span>
+                <span className="diamond-icon">
+                  <span className="diamond-icon__arrow">▶</span>
+                </span>
+              </div>
+            </div>
+            <span className="demographics-subtitle">
+              PREDICTED RACE &amp; AGE
+            </span>
           </div>
           <div className="demographics-layout">
             <div className="category-tabs">
@@ -355,127 +372,108 @@ function App() {
                   onClick={() => setActiveCategory(category)}
                 >
                   <strong>
-                    {selectedValues[category] ||
-                      Object.entries(analysisData?.[category] || {}).sort(
-                        (a, b) => b[1] - a[1]
-                      )[0]?.[0] ||
-                      "—"}
+                    {selectedValues[category] || topSelections[category] || "—"}
                   </strong>
-                  <span>
-                    {category === "gender" ? "SEX" : category.toUpperCase()}
-                  </span>
+                  <span>{categoryLabel(category)}</span>
                 </button>
               ))}
             </div>
             <div className="prediction-focus">
-              <strong>
-                {selectedValues[activeCategory] || topPrediction?.[0] || "—"}
+              <strong className="prediction-focus__value">
+                {selectedLabel || "—"}
+                {activeCategory === "age" && (
+                  <span className="prediction-focus__suffix"> y.o.</span>
+                )}
               </strong>
               <div className="confidence-circle">
-                {(() => {
-                  const selectedLabel =
-                    selectedValues[activeCategory] || topPrediction?.[0];
-                  const selectedScore =
-                    analysisData?.[activeCategory]?.[selectedLabel] ?? 0;
-                  const percent = selectedScore * 100;
-                  const radius = 47;
-                  const circumference = 2 * Math.PI * radius;
-                  const offset =
-                    circumference - (percent / 100) * circumference;
-                  return (
-                    <>
-                      <svg
-                        className="confidence-ring"
-                        viewBox="0 0 100 100"
-                        aria-hidden="true"
-                      >
-                        <circle
-                          className="confidence-ring-track"
-                          cx="50"
-                          cy="50"
-                          r={radius}
-                        />
-                        <circle
-                          className="confidence-ring-value"
-                          cx="50"
-                          cy="50"
-                          r={radius}
-                          strokeDasharray={circumference}
-                          strokeDashoffset={offset}
-                        />
-                      </svg>
-                      <span>{percent.toFixed(2)}%</span>
-                    </>
-                  );
-                })()}
+                <svg
+                  className="confidence-ring"
+                  viewBox="0 0 100 100"
+                  aria-hidden="true"
+                >
+                  <circle
+                    className="confidence-ring-track"
+                    cx="50"
+                    cy="50"
+                    r={radius}
+                  />
+                  <circle
+                    className="confidence-ring-value"
+                    cx="50"
+                    cy="50"
+                    r={radius}
+                    strokeDasharray={circumference}
+                    strokeDashoffset={offset}
+                  />
+                </svg>
+                <span className="confidence-value">
+                  {percent.toFixed(2)}
+                  <sup className="confidence-value__percent">%</sup>
+                </span>
               </div>
             </div>
             <div className="score-list">
               <div className="score-list-header">
-                <span>
-                  {activeCategory === "gender"
-                    ? "SEX"
-                    : activeCategory.toUpperCase()}
-                </span>
+                <span>{categoryLabel(activeCategory)}</span>
                 <span>A.I. CONFIDENCE</span>
               </div>
-              {sortedScores.map(([label, score]) => (
-                <button
-                  key={label}
-                  type="button"
-                  className={`score-row ${
-                    (selectedValues[activeCategory] || topPrediction?.[0]) ===
-                    label
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() => handleScoreSelect(label)}
-                >
-                  <span className="score-label">
-                    <span className="score-diamond">◇</span>
-                    {label}
-                  </span>
-                  <span>{(score * 100).toFixed(2)}%</span>
-                </button>
-              ))}
+              {sortedScores.map(([label, score]) => {
+                const isSelected = selectedLabel === label;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`score-row ${isSelected ? "selected" : ""}`}
+                    onClick={() => handleScoreSelect(label)}
+                  >
+                    <span className="score-label">
+                      <span className="score-diamond">
+                        {isSelected ? "◈" : "◇"}
+                      </span>
+                      {label}
+                    </span>
+                    <span>{(score * 100).toFixed(2)}%</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
-          <div className="demographics-instruction">
-            If A.I. estimate is wrong, select the correct one.
-          </div>
-          <div className="demographics-actions">
-            <button
-              type="button"
-              className="reset-button"
-              onClick={handleDemographicsReset}
-            >
-              RESET
-            </button>
-            <button
-              type="button"
-              className="confirm-button"
-              onClick={handleDemographicsConfirm}
-            >
-              CONFIRM
-            </button>
+          <div className="screen-footer">
+            <div className="demographics-instruction">
+              If A.I. estimate is wrong, select the correct one.
+            </div>
+            <div className="demographics-actions">
+              <button
+                type="button"
+                className="reset-button"
+                onClick={handleDemographicsReset}
+              >
+                RESET
+              </button>
+              <button
+                type="button"
+                className="confirm-button"
+                onClick={handleDemographicsConfirm}
+              >
+                CONFIRM
+              </button>
+            </div>
           </div>
         </div>
       ) : step === "camera" && cameraStage === "setup" ? (
         <div className="camera-setup-screen">
-          <div className="camera-setup-group">
-            <div className="camera-setup-frames">
-              <div className="setup-frame setup-frame-one" />
-              <div className="setup-frame setup-frame-two" />
-              <div className="setup-frame setup-frame-three" />
-            </div>
-            <img src="/camera.svg" alt="" className="camera-setup-icon" />
-            <strong className="camera-setup-status">
-              SETTING UP CAMERA ...
-            </strong>
+          <div className="rotating-frames" aria-hidden="true">
+            <span className="rotating-frame rotating-frame--outer" />
+            <span className="rotating-frame rotating-frame--middle" />
+            <span className="rotating-frame rotating-frame--inner" />
           </div>
+          <img src="/camera.svg" alt="" className="camera-setup-icon" />
+          <strong className="camera-setup-status">SETTING UP CAMERA ...</strong>
           <div className="camera-tips">
-            <span>TO GET BETTER RESULTS MAKE SURE TO HAVE</span>
-            <div>
+            <span className="camera-tips__heading">
+              TO GET BETTER RESULTS MAKE SURE TO HAVE
+            </span>
+            <div className="camera-tips__list">
               <span>◇ NEUTRAL EXPRESSION</span>
               <span>◇ FRONTAL POSE</span>
               <span>◇ ADEQUATE LIGHTING</span>
@@ -502,75 +500,86 @@ function App() {
         </div>
       ) : step === "image-source" ? (
         <div className="image-source-screen">
-          <button
-            type="button"
-            className="source-option camera-option"
-            onClick={handleCameraStart}
-          >
-            <div className="source-diamond">
-              <div className="diamond diamond-one" />
-              <div className="diamond diamond-two" />
-              <div className="diamond diamond-three" />
-              <img
-                className="source-icon-image"
-                src="/camera.svg"
-                alt="Camera"
-              />
-            </div>
-            <span className="source-label">
-              ALLOW A.I. TO
-              <br />
-              SCAN YOUR FACE
-            </span>
-          </button>
-          {cameraStage === "permission" && (
-            <div className="camera-permission-overlay">
-              <strong>ALLOW A.I. TO ACCESS YOUR CAMERA</strong>
-              <div className="camera-permission-actions">
-                <button
-                  type="button"
-                  onClick={() => setCameraStage("idle")}
-                >
-                  DENY
-                </button>
-                <button type="button" onClick={handleCameraAllow}>
-                  ALLOW
-                </button>
+          <div className="source-composition source-composition--camera">
+            <button
+              type="button"
+              className="source-option"
+              onClick={handleCameraStart}
+            >
+              <span className="source-rhombuses" aria-hidden="true">
+                <span className="source-rhombus source-rhombus--outer" />
+                <span className="source-rhombus source-rhombus--middle" />
+                <span className="source-rhombus source-rhombus--inner" />
+              </span>
+              <img className="source-icon" src="/camera.svg" alt="Camera" />
+              <span className="source-callout source-callout--camera">
+                <span className="source-callout__line" />
+                <span className="source-callout__dot" />
+                <span className="source-callout__text">
+                  ALLOW A.I.
+                  <br />
+                  TO SCAN YOUR FACE
+                </span>
+              </span>
+            </button>
+            {cameraStage === "permission" && (
+              <div className="camera-permission-dialog">
+                <strong className="camera-permission-dialog__title">
+                  ALLOW A.I. TO ACCESS YOUR CAMERA
+                </strong>
+                <div className="camera-permission-dialog__actions">
+                  <button
+                    type="button"
+                    className="camera-permission-dialog__deny"
+                    onClick={() => setCameraStage("idle")}
+                  >
+                    DENY
+                  </button>
+                  <button
+                    type="button"
+                    className="camera-permission-dialog__allow"
+                    onClick={handleCameraAllow}
+                  >
+                    ALLOW
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
-          <button
-            type="button"
-            className={`source-option gallery-option ${
-              cameraStage === "permission" ? "source-option-dimmed" : ""
-            }`}
-            aria-disabled={cameraStage === "permission"}
-            onClick={() => {
-              if (cameraStage === "permission") {
-                return;
-              }
-              if (fileInputRef.current) {
-                fileInputRef.current.value = "";
-                fileInputRef.current.click();
-              }
-            }}
-          >
-            <div className="source-diamond">
-              <div className="diamond diamond-one" />
-              <div className="diamond diamond-two" />
-              <div className="diamond diamond-three" />
-              <img
-                className="source-icon-image"
-                src="/gallery.svg"
-                alt="Gallery"
-              />
-            </div>
-            <span className="source-label">
-              ALLOW A.I.
-              <br />
-              ACCESS GALLERY
-            </span>
-          </button>
+            )}
+          </div>
+          <div className="source-composition source-composition--gallery">
+            <button
+              type="button"
+              className={`source-option ${
+                cameraStage === "permission" ? "source-option--dimmed" : ""
+              }`}
+              aria-disabled={cameraStage === "permission"}
+              onClick={() => {
+                if (cameraStage === "permission") {
+                  return;
+                }
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = "";
+                  fileInputRef.current.click();
+                }
+              }}
+            >
+              <span className="source-rhombuses" aria-hidden="true">
+                <span className="source-rhombus source-rhombus--outer" />
+                <span className="source-rhombus source-rhombus--middle" />
+                <span className="source-rhombus source-rhombus--inner" />
+              </span>
+              <img className="source-icon" src="/gallery.svg" alt="Gallery" />
+              <span className="source-callout source-callout--gallery">
+                <span className="source-callout__line" />
+                <span className="source-callout__dot" />
+                <span className="source-callout__text">
+                  ALLOW A.I.
+                  <br />
+                  ACCESS GALLERY
+                </span>
+              </span>
+            </button>
+          </div>
         </div>
       ) : (
         <>
@@ -634,10 +643,10 @@ function App() {
           )}
         </>
       )}
-      {!(step === "camera" && cameraStage === "setup") && (
+      {!(step === "camera" && cameraStage === "setup") && !isAnalyzing && (
         <button type="button" className="back-button" onClick={handleBack}>
-          <span className="back-icon">
-            <span className="back-arrow">◀</span>
+          <span className="diamond-icon">
+            <span className="diamond-icon__arrow">◀</span>
           </span>
           <span className="back-text">BACK</span>
         </button>
