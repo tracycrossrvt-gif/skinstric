@@ -418,84 +418,83 @@ button {
 .camera-permission-dialog__allow {
   color: #ffffff;
 }
+/*
+ * 007/011: shared three-frame group, centered on the page (Figma 960, 480).
+ * Sizes are Figma px times --fx; centering uses offsets, not transforms,
+ * so rotation stays free for the motion pass.
+ */
+.rotating-frames {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+.rotating-frame {
+  position: absolute;
+  left: calc(var(--frame-side) * var(--fx) / -2);
+  top: calc(var(--frame-side) * var(--fx) / -2);
+  display: block;
+  width: calc(var(--frame-side) * var(--fx));
+  height: calc(var(--frame-side) * var(--fx));
+  border: 1px dotted var(--muted);
+}
+.rotating-frame--outer {
+  --frame-side: 423;
+  opacity: 0.3;
+  transform: rotate(30deg);
+}
+.rotating-frame--middle {
+  --frame-side: 345;
+  opacity: 0.6;
+  transform: rotate(45deg);
+}
+.rotating-frame--inner {
+  --frame-side: 285;
+  transform: rotate(59deg);
+}
 .camera-setup-screen {
   position: absolute;
   inset: 0;
   background: var(--bg);
 }
-.camera-setup-group {
-  position: absolute;
-  left: 50%;
-  top: 48%;
-  width: 360px;
-  height: 360px;
-  transform: translate(-50%, -50%);
-}
-.camera-setup-frames {
-  position: absolute;
-  inset: 0;
-}
-.setup-frame {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  border: 1px dashed var(--muted);
-  transform-origin: center;
-}
-.setup-frame-one {
-  width: 250px;
-  height: 250px;
-  opacity: 0.3;
-  transform: translate(-50%, -50%) rotate(31deg);
-}
-.setup-frame-two {
-  width: 225px;
-  height: 225px;
-  opacity: 0.6;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.setup-frame-three {
-  width: 200px;
-  height: 200px;
-  opacity: 1;
-  transform: translate(-50%, -50%) rotate(58deg);
-}
 .camera-setup-icon {
   position: absolute;
   left: 50%;
-  top: 46%;
-  width: 76px;
-  height: 76px;
-  transform: translate(-50%, -50%);
-  z-index: 2;
+  top: 50%;
+  width: calc(136 * var(--fx));
+  height: calc(136 * var(--fx));
+  margin: calc(-68 * var(--fx)) 0 0 calc(-68 * var(--fx));
 }
+/* text rows: Figma centers at y 578, 738 and 778 (+98, +258, +298) */
 .camera-setup-status {
   position: absolute;
-  left: 50%;
-  top: 62%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  line-height: 16px;
+  left: 0;
+  right: 0;
+  top: calc(50% + 98 * var(--fx) - 12px);
+  font-size: 14px;
+  line-height: 24px;
   font-weight: 600;
+  text-align: center;
   white-space: nowrap;
-  z-index: 2;
 }
 .camera-tips {
   position: absolute;
-  left: 50%;
-  top: 67%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  top: calc(50% + 258 * var(--fx) - 12px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  font-size: 10px;
-  line-height: 14px;
+  gap: 16px;
+  font-size: 14px;
+  line-height: 24px;
   white-space: nowrap;
 }
-.camera-tips > div {
+.camera-tips__list {
   display: flex;
-  gap: 28px;
+  justify-content: center;
+  gap: 32px;
 }
 .analysis-eyebrow {
   margin-bottom: 8px;
@@ -506,35 +505,18 @@ button {
 .analysis-loading {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
 }
-.analysis-loading p {
-  position: relative;
-  z-index: 2;
-  font-size: 14px;
-  font-weight: 600;
-}
-.loading-frame {
+.analysis-loading__text {
   position: absolute;
-  border: 2px dashed var(--muted);
-}
-.loading-frame--outer {
-  width: 260px;
-  height: 260px;
-  opacity: 0.3;
-  transform: rotate(31deg);
-}
-.loading-frame--middle {
-  width: 220px;
-  height: 220px;
-  opacity: 0.6;
-  transform: rotate(45deg);
-}
-.loading-frame--inner {
-  width: 180px;
-  height: 180px;
-  transform: rotate(58deg);
+  left: 0;
+  right: 0;
+  top: calc(50% - 12px);
+  margin: 0;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
 }
 .analysis-screen {
   position: absolute;

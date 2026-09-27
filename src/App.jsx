@@ -278,10 +278,12 @@ function App() {
         !isAnalyzing && <p className="eyebrow">TO START ANALYSIS</p>}
       {isAnalyzing ? (
         <div className="analysis-loading">
-          <div className="loading-frame loading-frame--outer" />
-          <div className="loading-frame loading-frame--middle" />
-          <div className="loading-frame loading-frame--inner" />
-          <p>PREPARING YOUR ANALYSIS...</p>
+          <div className="rotating-frames" aria-hidden="true">
+            <span className="rotating-frame rotating-frame--outer" />
+            <span className="rotating-frame rotating-frame--middle" />
+            <span className="rotating-frame rotating-frame--inner" />
+          </div>
+          <p className="analysis-loading__text">PREPARING YOUR ANALYSIS ...</p>
         </div>
       ) : step === "analysis" ? (
         <div className="analysis-screen">
@@ -464,20 +466,18 @@ function App() {
         </div>
       ) : step === "camera" && cameraStage === "setup" ? (
         <div className="camera-setup-screen">
-          <div className="camera-setup-group">
-            <div className="camera-setup-frames">
-              <div className="setup-frame setup-frame-one" />
-              <div className="setup-frame setup-frame-two" />
-              <div className="setup-frame setup-frame-three" />
-            </div>
-            <img src="/camera.svg" alt="" className="camera-setup-icon" />
-            <strong className="camera-setup-status">
-              SETTING UP CAMERA ...
-            </strong>
+          <div className="rotating-frames" aria-hidden="true">
+            <span className="rotating-frame rotating-frame--outer" />
+            <span className="rotating-frame rotating-frame--middle" />
+            <span className="rotating-frame rotating-frame--inner" />
           </div>
+          <img src="/camera.svg" alt="" className="camera-setup-icon" />
+          <strong className="camera-setup-status">SETTING UP CAMERA ...</strong>
           <div className="camera-tips">
-            <span>TO GET BETTER RESULTS MAKE SURE TO HAVE</span>
-            <div>
+            <span className="camera-tips__heading">
+              TO GET BETTER RESULTS MAKE SURE TO HAVE
+            </span>
+            <div className="camera-tips__list">
               <span>◇ NEUTRAL EXPRESSION</span>
               <span>◇ FRONTAL POSE</span>
               <span>◇ ADEQUATE LIGHTING</span>
