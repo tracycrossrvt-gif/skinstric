@@ -333,7 +333,7 @@ function App() {
           <div className="demographics-heading">
             <span className="analysis-eyebrow">A.I. ANALYSIS</span>
             <div className="demographics-title-row">
-              <strong>DEMOGRAPHICS</strong>
+              <strong className="demographics-title">DEMOGRAPHICS</strong>
               <div className="demographics-nav" aria-hidden="true">
                 <span className="diamond-icon">
                   <span className="diamond-icon__arrow">◀</span>
@@ -370,8 +370,11 @@ function App() {
               ))}
             </div>
             <div className="prediction-focus">
-              <strong>
+              <strong className="prediction-focus__value">
                 {selectedValues[activeCategory] || topPrediction?.[0] || "—"}
+                {activeCategory === "age" && (
+                  <span className="prediction-focus__suffix"> y.o.</span>
+                )}
               </strong>
               <div className="confidence-circle">
                 {(() => {
@@ -406,7 +409,10 @@ function App() {
                           strokeDashoffset={offset}
                         />
                       </svg>
-                      <span>{percent.toFixed(2)}%</span>
+                      <span className="confidence-value">
+                        {percent.toFixed(2)}
+                        <sup className="confidence-value__percent">%</sup>
+                      </span>
                     </>
                   );
                 })()}
@@ -421,25 +427,27 @@ function App() {
                 </span>
                 <span>A.I. CONFIDENCE</span>
               </div>
-              {sortedScores.map(([label, score]) => (
-                <button
-                  key={label}
-                  type="button"
-                  className={`score-row ${
-                    (selectedValues[activeCategory] || topPrediction?.[0]) ===
-                    label
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() => handleScoreSelect(label)}
-                >
-                  <span className="score-label">
-                    <span className="score-diamond">◇</span>
-                    {label}
-                  </span>
-                  <span>{(score * 100).toFixed(2)}%</span>
-                </button>
-              ))}
+              {sortedScores.map(([label, score]) => {
+                const isSelected =
+                  (selectedValues[activeCategory] || topPrediction?.[0]) ===
+                  label;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`score-row ${isSelected ? "selected" : ""}`}
+                    onClick={() => handleScoreSelect(label)}
+                  >
+                    <span className="score-label">
+                      <span className="score-diamond">
+                        {isSelected ? "◈" : "◇"}
+                      </span>
+                      {label}
+                    </span>
+                    <span>{(score * 100).toFixed(2)}%</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
           <div className="screen-footer">

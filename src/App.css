@@ -3,6 +3,7 @@
   --ink: #1a1b1c;
   --panel: #f3f3f4;
   --muted: #a0a4ab;
+  --row-hover: #e1e1e2;
 }
 * {
   box-sizing: border-box;
@@ -635,37 +636,43 @@ button {
   position: absolute;
   inset: 64px 0 0;
 }
+/* heading: Figma eyebrow center y 97, title cap top 125, subtitle y 202 */
 .demographics-heading {
   position: absolute;
-  top: 24px;
+  top: 21px;
   left: 32px;
   display: flex;
   flex-direction: column;
 }
-.demographics-heading strong {
-  font-size: 48px;
-  line-height: 1;
-  font-weight: 400;
-  letter-spacing: -0.04em;
-}
 .demographics-title-row {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 11px;
+  margin-top: 6px;
 }
+.demographics-title {
+  font-size: 72px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+}
+/* nav sits like a superscript: box top at Figma y 92, 23px above the title box */
 .demographics-nav {
   display: flex;
   align-items: center;
   gap: 9px;
+  margin-top: -23px;
 }
 .demographics-subtitle {
-  margin-top: 8px;
+  margin-top: 3px;
   font-size: 14px;
-  line-height: 18px;
+  line-height: 24px;
+  text-transform: uppercase;
 }
+/* body: Figma y 302-846, columns 208 / fill / 448 with 16px gaps */
 .demographics-layout {
   position: absolute;
-  top: 228px;
+  top: 238px;
   left: 32px;
   right: 32px;
   height: 544px;
@@ -685,31 +692,33 @@ button {
 }
 .demographics-instruction {
   grid-column: 2;
-  font-size: 11px;
-  line-height: 14px;
-  color: #9a9a9a;
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--muted);
   white-space: nowrap;
 }
 .demographics-actions {
   grid-column: 3;
   justify-self: end;
   display: flex;
-  gap: 10px;
+  gap: 24px;
 }
 .demographics-actions button {
-  min-width: 64px;
-  height: 32px;
+  height: 35px;
+  padding: 0 8px;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
 .reset-button {
+  min-width: 60px;
   border: 1px solid var(--ink);
   background: transparent;
   color: var(--ink);
 }
 .confirm-button {
+  min-width: 95px;
   border: 1px solid var(--ink);
   background: var(--ink);
   color: #ffffff;
@@ -719,44 +728,15 @@ button {
   flex-direction: column;
   gap: 8px;
 }
-.prediction-focus {
-  position: relative;
-  min-width: 0;
-  height: 544px;
-  grid-column: 2;
-  padding: 16px;
-  background: var(--panel);
-}
-.prediction-focus,
-.score-list {
-  border-top: 1px solid var(--ink);
-}
-.score-list-header {
-  min-height: 38px;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  line-height: 14px;
-  font-weight: 400;
-}
-.score-list {
-  height: 544px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  grid-column: 3;
-  background: var(--panel);
-}
 .category-tabs button {
   height: 104px;
-  padding: 16px 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   border: none;
+  border-top: 1px solid var(--ink);
   background: var(--panel);
   color: var(--ink);
   text-align: left;
@@ -766,48 +746,60 @@ button {
   background: var(--ink);
   color: #ffffff;
 }
-.category-tabs button strong {
-  font-size: 13px;
-  line-height: 16px;
+.category-tabs button strong,
+.category-tabs button span {
+  font-size: 14px;
+  line-height: 24px;
   font-weight: 600;
   letter-spacing: -0.02em;
   text-transform: uppercase;
 }
-.category-tabs button span {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
+.prediction-focus {
+  position: relative;
+  min-width: 0;
+  height: 544px;
+  grid-column: 2;
+  border-top: 1px solid var(--ink);
+  background: var(--panel);
 }
-.prediction-focus > strong {
+/* value center at Figma y 348, 46px below the panel top */
+.prediction-focus__value {
   position: absolute;
-  top: 16px;
+  top: 22px;
   left: 16px;
-  font-size: 26px;
-  line-height: 1;
+  font-size: 40px;
+  line-height: 48px;
   font-weight: 400;
   letter-spacing: -0.03em;
   text-transform: capitalize;
 }
+.prediction-focus__suffix {
+  text-transform: none;
+}
+/* ring: 384px, 16px from the panel's right edge, 24px above its bottom */
 .confidence-circle {
   position: absolute;
-  width: min(21vw, 400px);
-  aspect-ratio: 1;
   right: 16px;
-  top: 124px;
+  bottom: 24px;
+  width: 384px;
+  height: 384px;
   display: grid;
   place-items: center;
 }
+/* r=47 of a 100 viewBox is 94% of the svg, so grow the svg by 12px per side
+   to make the visible ring 384px without touching the circumference math */
 .confidence-ring {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  left: -12px;
+  top: -12px;
+  width: calc(100% + 24px);
+  height: calc(100% + 24px);
   transform: rotate(-90deg);
 }
 .confidence-ring-track,
 .confidence-ring-value {
   fill: none;
-  stroke-width: 0.7;
+  stroke-width: 0.45;
 }
 .confidence-ring-track {
   stroke: #d9d9d9;
@@ -817,16 +809,40 @@ button {
   stroke-linecap: butt;
   transition: stroke-dashoffset 0.3s ease;
 }
-.confidence-circle > span {
+.confidence-value {
   position: relative;
-  z-index: 1;
-  font-size: 32px;
+  font-size: 40px;
   line-height: 1;
   font-weight: 400;
   letter-spacing: -0.03em;
 }
+.confidence-value__percent {
+  font-size: 16px;
+  line-height: 1;
+  vertical-align: top;
+}
+.score-list {
+  height: 544px;
+  display: flex;
+  flex-direction: column;
+  grid-column: 3;
+  border-top: 1px solid var(--ink);
+  background: var(--panel);
+}
+.score-list-header {
+  flex: none;
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+}
 .score-row {
-  min-height: 44px;
+  flex: none;
+  height: 48px;
   padding: 0 16px;
   display: flex;
   align-items: center;
@@ -835,8 +851,13 @@ button {
   background: transparent;
   color: var(--ink);
   font: inherit;
+  font-size: 14px;
+  line-height: 24px;
   text-transform: capitalize;
   cursor: pointer;
+}
+.score-row:not(.selected):hover {
+  background: var(--row-hover);
 }
 .score-row.selected {
   background: var(--ink);
@@ -845,7 +866,7 @@ button {
 .score-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 .score-diamond {
   font-size: 10px;
