@@ -259,10 +259,10 @@ function App() {
   };
   return (
     <main className="page">
-      {!(step === "camera" && cameraStage === "setup") && (
+      {!(step === "camera" && cameraStage === "setup") && !isAnalyzing && (
         <header className="header">
           <div className="brand">
-            <span>SKINSTRIC</span>
+            <span className="brand-name">SKINSTRIC</span>
             <span className="section-label">
               {step === "analysis" || step === "demographics"
                 ? "[ ANALYSIS ]"
@@ -321,8 +321,8 @@ function App() {
           </div>
           <button type="button" className="summary-button">
             <span className="summary-text">GET SUMMARY</span>
-            <span className="summary-icon">
-              <span className="summary-arrow">▶</span>
+            <span className="diamond-icon">
+              <span className="diamond-icon__arrow">▶</span>
             </span>
           </button>
         </div>
@@ -333,11 +333,11 @@ function App() {
             <div className="demographics-title-row">
               <strong>DEMOGRAPHICS</strong>
               <div className="demographics-nav" aria-hidden="true">
-                <span className="demographics-nav-icon">
-                  <span className="demographics-nav-arrow">◀</span>
+                <span className="diamond-icon">
+                  <span className="diamond-icon__arrow">◀</span>
                 </span>
-                <span className="demographics-nav-icon">
-                  <span className="demographics-nav-arrow">▶</span>
+                <span className="diamond-icon">
+                  <span className="diamond-icon__arrow">▶</span>
                 </span>
               </div>
             </div>
@@ -440,24 +440,26 @@ function App() {
               ))}
             </div>
           </div>
-          <div className="demographics-instruction">
-            If A.I. estimate is wrong, select the correct one.
-          </div>
-          <div className="demographics-actions">
-            <button
-              type="button"
-              className="reset-button"
-              onClick={handleDemographicsReset}
-            >
-              RESET
-            </button>
-            <button
-              type="button"
-              className="confirm-button"
-              onClick={handleDemographicsConfirm}
-            >
-              CONFIRM
-            </button>
+          <div className="screen-footer">
+            <div className="demographics-instruction">
+              If A.I. estimate is wrong, select the correct one.
+            </div>
+            <div className="demographics-actions">
+              <button
+                type="button"
+                className="reset-button"
+                onClick={handleDemographicsReset}
+              >
+                RESET
+              </button>
+              <button
+                type="button"
+                className="confirm-button"
+                onClick={handleDemographicsConfirm}
+              >
+                CONFIRM
+              </button>
+            </div>
           </div>
         </div>
       ) : step === "camera" && cameraStage === "setup" ? (
@@ -634,10 +636,10 @@ function App() {
           )}
         </>
       )}
-      {!(step === "camera" && cameraStage === "setup") && (
+      {!(step === "camera" && cameraStage === "setup") && !isAnalyzing && (
         <button type="button" className="back-button" onClick={handleBack}>
-          <span className="back-icon">
-            <span className="back-arrow">◀</span>
+          <span className="diamond-icon">
+            <span className="diamond-icon__arrow">◀</span>
           </span>
           <span className="back-text">BACK</span>
         </button>

@@ -23,6 +23,9 @@ button {
   min-height: 100vh;
   background: var(--bg);
   overflow: hidden;
+  /* shared baseline for BACK and every screen's footer row */
+  --footer-bottom: 36px;
+  --footer-height: 44px;
 }
 .header {
   height: 64px;
@@ -32,11 +35,43 @@ button {
 }
 .brand {
   display: flex;
-  gap: 10px;
-  font-size: 11px;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+  line-height: 16px;
+}
+.brand-name {
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 .section-label {
   color: #777;
+}
+.diamond-icon {
+  --diamond-side: 30px;
+  --diamond-box: calc(var(--diamond-side) * 1.4142);
+  position: relative;
+  flex: none;
+  width: var(--diamond-box);
+  height: var(--diamond-box);
+  display: grid;
+  place-items: center;
+}
+.diamond-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--diamond-side);
+  height: var(--diamond-side);
+  margin: auto;
+  border: 1px solid var(--ink);
+  transform: rotate(45deg);
+}
+.diamond-icon__arrow {
+  position: relative;
+  display: block;
+  font-size: 12px;
+  line-height: 1;
 }
 .eyebrow {
   position: absolute;
@@ -166,10 +201,11 @@ button {
 .back-button {
   position: absolute;
   left: 32px;
-  bottom: 24px;
+  bottom: var(--footer-bottom);
+  height: var(--footer-height);
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 17px;
   padding: 0;
   border: none;
   background: transparent;
@@ -183,20 +219,6 @@ button {
   font-weight: 600;
   letter-spacing: -0.02em;
   white-space: nowrap;
-}
-.back-icon {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--ink);
-  transform: rotate(45deg);
-}
-.back-arrow {
-  display: block;
-  font-size: 12px;
-  line-height: 1;
-  transform: rotate(-45deg);
 }
 .api-error {
   position: absolute;
@@ -602,28 +624,19 @@ button {
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
-.summary-icon {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--ink);
-  transform: rotate(45deg);
-}
-.summary-arrow {
-  display: block;
-  font-size: 12px;
-  line-height: 1;
-  transform: rotate(-45deg);
+.summary-button .diamond-icon {
+  /* keeps the pre-merge 34px footprint so GET SUMMARY does not move */
+  --diamond-side: 34px;
+  --diamond-box: 34px;
 }
 .demographics-screen {
   position: absolute;
-  inset: 64px 32px 60px;
+  inset: 64px 0 0;
 }
 .demographics-heading {
   position: absolute;
   top: 24px;
-  left: 0;
+  left: 32px;
   display: flex;
   flex-direction: column;
 }
@@ -641,30 +654,7 @@ button {
 .demographics-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-.demographics-nav-icon {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
-  display: grid;
-  place-items: center;
-}
-.demographics-nav-icon::before {
-  content: "";
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border: 1px solid var(--ink);
-  transform: rotate(45deg);
-}
-.demographics-nav-arrow {
-  position: relative;
-  z-index: 1;
-  display: block;
-  font-size: 12px;
-  line-height: 1;
+  gap: 9px;
 }
 .demographics-subtitle {
   margin-top: 8px;
@@ -674,27 +664,33 @@ button {
 .demographics-layout {
   position: absolute;
   top: 228px;
-  left: 0;
-  right: 0;
+  left: 32px;
+  right: 32px;
   height: 544px;
   display: grid;
   grid-template-columns: 208px minmax(0, 1fr) 448px;
   gap: 16px;
 }
-.demographics-instruction {
+.screen-footer {
   position: absolute;
-  left: 50%;
-  bottom: 6px;
-  transform: translateX(-50%);
+  left: 32px;
+  right: 32px;
+  bottom: var(--footer-bottom);
+  height: var(--footer-height);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+}
+.demographics-instruction {
+  grid-column: 2;
   font-size: 11px;
   line-height: 14px;
   color: #9a9a9a;
   white-space: nowrap;
 }
 .demographics-actions {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  grid-column: 3;
+  justify-self: end;
   display: flex;
   gap: 10px;
 }
