@@ -382,7 +382,7 @@ button {
   top: calc(-39 * var(--fx));
   z-index: 20;
   width: calc(352 * var(--fx));
-  min-width: 336px;
+  min-width: 352px;
   background: var(--ink);
   color: #ffffff;
 }
@@ -1044,5 +1044,263 @@ button {
   .source-icon:hover,
   .demographics-tile:hover {
     transform: none;
+  }
+}
+/*
+ * Responsive overrides. Desktop (>1024px) uses the base rules above
+ * unchanged; tablet (<=1024px) and mobile (<=640px) only override here.
+ */
+@media (max-width: 1024px) {
+  .page {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+  /* 007: --fx bottoms out at 0.55 here, so the icon and text rows use
+     fixed offsets that clear the outer frame (about +/-159px) */
+  .camera-setup-icon {
+    width: 88px;
+    height: 88px;
+    margin: -44px 0 0 -44px;
+  }
+  .camera-setup-status {
+    top: calc(50% + 50px);
+  }
+  .camera-tips {
+    top: calc(50% + 170px);
+  }
+  /* 012: the vw-based hub is rebuilt on --hu (1 desktop vw), capped so
+     the outer frame fits the viewport width */
+  .analysis-screen {
+    --hu: min(16px, calc((100vw - 32px) / 28.06));
+  }
+  .analysis-grid {
+    width: calc(16.337 * var(--hu));
+    height: calc(16.337 * var(--hu));
+  }
+  .analysis-frame-one {
+    width: calc(22.17 * var(--hu));
+    height: calc(22.17 * var(--hu));
+  }
+  .analysis-frame-two {
+    width: calc(25.12 * var(--hu));
+    height: calc(25.12 * var(--hu));
+  }
+  .analysis-frame-three {
+    width: calc(28.06 * var(--hu));
+    height: calc(28.06 * var(--hu));
+  }
+  .analysis-tile {
+    width: calc(8.015 * var(--hu));
+    height: calc(8.015 * var(--hu));
+  }
+  .demographics-tile {
+    left: calc(4.161 * var(--hu));
+  }
+  .skin-tile {
+    top: calc(4.161 * var(--hu));
+  }
+  .concerns-tile {
+    top: calc(4.161 * var(--hu));
+    left: calc(8.322 * var(--hu));
+  }
+  .weather-tile {
+    top: calc(8.322 * var(--hu));
+    left: calc(4.161 * var(--hu));
+  }
+  /* 014: the three columns stack in normal flow; the footer stays last,
+     on white, with BACK and the actions sharing its bottom row */
+  .demographics-screen {
+    position: relative;
+    inset: auto;
+    min-height: calc(100vh - 64px);
+    min-height: calc(100dvh - 64px);
+    display: flex;
+    flex-direction: column;
+    padding: 0 32px var(--footer-bottom);
+  }
+  .demographics-heading {
+    position: static;
+    padding-top: 21px;
+  }
+  .demographics-title {
+    font-size: 56px;
+  }
+  .demographics-layout {
+    position: static;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .category-tabs {
+    flex-direction: row;
+  }
+  .category-tabs button {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .prediction-focus {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 16px 24px;
+  }
+  .prediction-focus__value {
+    position: static;
+  }
+  .confidence-circle {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    align-self: center;
+    width: min(384px, 70vw);
+    height: auto;
+    margin-top: 24px;
+  }
+  .screen-footer {
+    position: static;
+    height: auto;
+    margin-top: auto;
+    padding-top: 24px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto var(--footer-height);
+    row-gap: 16px;
+  }
+  .demographics-instruction {
+    grid-column: 1 / -1;
+    justify-self: center;
+    text-align: center;
+    white-space: normal;
+  }
+  .demographics-actions {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+@media (max-width: 640px) {
+  .header {
+    padding: 0 16px;
+  }
+  /* name/location: the prompt spans the viewport and the 60px type
+     scales down so the heading, input and value fit */
+  .name-prompt {
+    left: 16px;
+    width: calc(100% - 32px);
+  }
+  .name-prompt span {
+    white-space: nowrap;
+  }
+  .name-prompt-button strong,
+  .name-input,
+  .location-complete strong {
+    font-size: clamp(32px, 10vw, 60px);
+  }
+  .name-input {
+    width: 100%;
+  }
+  .eyebrow {
+    left: 16px;
+  }
+  .back-button {
+    left: 16px;
+  }
+  /* 005/006: the two options stack in normal flow, with the label under
+     each rhombus instead of a callout line */
+  .image-source-screen {
+    --fx: 0.5px;
+    position: relative;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 64px 16px 100px;
+  }
+  .source-composition,
+  .source-composition--camera,
+  .source-composition--gallery {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: calc(480 * var(--fx));
+    height: calc(480 * var(--fx));
+    margin-bottom: 56px;
+  }
+  .source-option {
+    left: 0;
+    top: 0;
+  }
+  .source-icon {
+    width: 100px;
+    height: 100px;
+  }
+  .source-callout__line,
+  .source-callout__dot {
+    display: none;
+  }
+  .source-callout--camera .source-callout__text,
+  .source-callout--gallery .source-callout__text {
+    left: 0;
+    right: auto;
+    top: calc(240 * var(--fx) + 8px);
+    text-align: center;
+    transform: translateX(-50%);
+  }
+  .camera-permission-dialog {
+    left: 50%;
+    top: calc(50% + 58px);
+    width: min(352px, calc(100vw - 32px));
+    min-width: 0;
+    transform: translateX(-50%);
+  }
+  /* 007: tips stack into a column */
+  .camera-tips {
+    padding: 0 16px;
+    white-space: normal;
+    text-align: center;
+  }
+  .camera-tips__list {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  /* 012: tiles are about 94-100px here, so labels drop to 10-11px to fit */
+  .analysis-heading {
+    left: 16px;
+  }
+  .analysis-tile {
+    font-size: clamp(10px, 2.8vw, 11px);
+    line-height: 18px;
+  }
+  .summary-button {
+    right: 16px;
+  }
+  /* 014 */
+  .demographics-screen {
+    padding: 0 16px var(--footer-bottom);
+  }
+  .demographics-title-row {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .demographics-title {
+    font-size: clamp(36px, 10vw, 56px);
+  }
+  .demographics-nav {
+    margin-top: 0;
+  }
+  .demographics-nav .diamond-icon {
+    --diamond-side: 22px;
+  }
+  .demographics-layout {
+    margin-top: 32px;
+  }
+  .category-tabs button {
+    padding: 12px;
+  }
+  .confidence-circle {
+    width: min(300px, 70vw);
   }
 }
