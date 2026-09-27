@@ -278,9 +278,9 @@ function App() {
         !isAnalyzing && <p className="eyebrow">TO START ANALYSIS</p>}
       {isAnalyzing ? (
         <div className="analysis-loading">
-          <div className="loading-diamond diamond-one" />
-          <div className="loading-diamond diamond-two" />
-          <div className="loading-diamond diamond-three" />
+          <div className="loading-frame loading-frame--outer" />
+          <div className="loading-frame loading-frame--middle" />
+          <div className="loading-frame loading-frame--inner" />
           <p>PREPARING YOUR ANALYSIS...</p>
         </div>
       ) : step === "analysis" ? (
@@ -331,19 +331,19 @@ function App() {
           <div className="demographics-heading">
             <span className="analysis-eyebrow">A.I. ANALYSIS</span>
             <div className="demographics-title-row">
-  <strong>DEMOGRAPHICS</strong>
-
-        <div className="demographics-nav" aria-hidden="true">
-  <span className="demographics-nav-icon">
-    <span className="demographics-nav-arrow">◀</span>
-  </span>
-
-  <span className="demographics-nav-icon">
-    <span className="demographics-nav-arrow">▶</span>
-  </span>
-</div>
-</div>
-            <span>PREDICTED RACE &amp; AGE</span>
+              <strong>DEMOGRAPHICS</strong>
+              <div className="demographics-nav" aria-hidden="true">
+                <span className="demographics-nav-icon">
+                  <span className="demographics-nav-arrow">◀</span>
+                </span>
+                <span className="demographics-nav-icon">
+                  <span className="demographics-nav-arrow">▶</span>
+                </span>
+              </div>
+            </div>
+            <span className="demographics-subtitle">
+              PREDICTED RACE &amp; AGE
+            </span>
           </div>
           <div className="demographics-layout">
             <div className="category-tabs">
@@ -508,9 +508,9 @@ function App() {
             onClick={handleCameraStart}
           >
             <div className="source-diamond">
-              <div className="diamond diamond-one" />
-              <div className="diamond diamond-two" />
-              <div className="diamond diamond-three" />
+              <div className="source-rhombus source-rhombus--outer" />
+              <div className="source-rhombus source-rhombus--middle" />
+              <div className="source-rhombus source-rhombus--inner" />
               <img
                 className="source-icon-image"
                 src="/camera.svg"
@@ -556,9 +556,9 @@ function App() {
             }}
           >
             <div className="source-diamond">
-              <div className="diamond diamond-one" />
-              <div className="diamond diamond-two" />
-              <div className="diamond diamond-three" />
+              <div className="source-rhombus source-rhombus--outer" />
+              <div className="source-rhombus source-rhombus--middle" />
+              <div className="source-rhombus source-rhombus--inner" />
               <img
                 className="source-icon-image"
                 src="/gallery.svg"
