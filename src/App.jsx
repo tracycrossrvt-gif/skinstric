@@ -257,6 +257,16 @@ function App() {
   const handleDemographicsConfirm = () => {
     setStep("analysis");
   };
+  function categoryLabel(category) {
+    return category === "gender" ? "SEX" : category.toUpperCase();
+  }
+  const topSelections = getTopSelections();
+  const selectedLabel = selectedValues[activeCategory] || topPrediction?.[0];
+  const selectedScore = analysisData?.[activeCategory]?.[selectedLabel] ?? 0;
+  const percent = selectedScore * 100;
+  const radius = 47;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percent / 100) * circumference;
   return (
     <main className="page">
       {!(step === "camera" && cameraStage === "setup") && !isAnalyzing && (
@@ -362,80 +372,53 @@ function App() {
                   onClick={() => setActiveCategory(category)}
                 >
                   <strong>
-                    {selectedValues[category] ||
-                      Object.entries(analysisData?.[category] || {}).sort(
-                        (a, b) => b[1] - a[1]
-                      )[0]?.[0] ||
-                      "—"}
+                    {selectedValues[category] || topSelections[category] || "—"}
                   </strong>
-                  <span>
-                    {category === "gender" ? "SEX" : category.toUpperCase()}
-                  </span>
+                  <span>{categoryLabel(category)}</span>
                 </button>
               ))}
             </div>
             <div className="prediction-focus">
               <strong className="prediction-focus__value">
-                {selectedValues[activeCategory] || topPrediction?.[0] || "—"}
+                {selectedLabel || "—"}
                 {activeCategory === "age" && (
                   <span className="prediction-focus__suffix"> y.o.</span>
                 )}
               </strong>
               <div className="confidence-circle">
-                {(() => {
-                  const selectedLabel =
-                    selectedValues[activeCategory] || topPrediction?.[0];
-                  const selectedScore =
-                    analysisData?.[activeCategory]?.[selectedLabel] ?? 0;
-                  const percent = selectedScore * 100;
-                  const radius = 47;
-                  const circumference = 2 * Math.PI * radius;
-                  const offset =
-                    circumference - (percent / 100) * circumference;
-                  return (
-                    <>
-                      <svg
-                        className="confidence-ring"
-                        viewBox="0 0 100 100"
-                        aria-hidden="true"
-                      >
-                        <circle
-                          className="confidence-ring-track"
-                          cx="50"
-                          cy="50"
-                          r={radius}
-                        />
-                        <circle
-                          className="confidence-ring-value"
-                          cx="50"
-                          cy="50"
-                          r={radius}
-                          strokeDasharray={circumference}
-                          strokeDashoffset={offset}
-                        />
-                      </svg>
-                      <span className="confidence-value">
-                        {percent.toFixed(2)}
-                        <sup className="confidence-value__percent">%</sup>
-                      </span>
-                    </>
-                  );
-                })()}
+                <svg
+                  className="confidence-ring"
+                  viewBox="0 0 100 100"
+                  aria-hidden="true"
+                >
+                  <circle
+                    className="confidence-ring-track"
+                    cx="50"
+                    cy="50"
+                    r={radius}
+                  />
+                  <circle
+                    className="confidence-ring-value"
+                    cx="50"
+                    cy="50"
+                    r={radius}
+                    strokeDasharray={circumference}
+                    strokeDashoffset={offset}
+                  />
+                </svg>
+                <span className="confidence-value">
+                  {percent.toFixed(2)}
+                  <sup className="confidence-value__percent">%</sup>
+                </span>
               </div>
             </div>
             <div className="score-list">
               <div className="score-list-header">
-                <span>
-                  {activeCategory === "gender"
-                    ? "SEX"
-                    : activeCategory.toUpperCase()}
-                </span>
+                <span>{categoryLabel(activeCategory)}</span>
                 <span>A.I. CONFIDENCE</span>
               </div>
               {sortedScores.map(([label, score]) => {
-                const isSelected =
-                  (selectedValues[activeCategory] || topPrediction?.[0]) ===
-                  label;
+                const isSelected = selectedLabel === label;
                 return (
                   <button
                     key={label}
