@@ -221,9 +221,12 @@ function App() {
         throw new Error("Failed to analyze image");
       }
       setAnalysisData(data.data);
+      setSelectedValues(getTopSelections(data.data));
+      setActiveCategory("race");
       setStep("analysis");
     } catch (error) {
       console.error("Phase 2 API error:", error);
+      setStep("image-source");
     } finally {
       setIsAnalyzing(false);
     }
@@ -240,11 +243,11 @@ function App() {
       [activeCategory]: label,
     }));
   }
-  const getTopSelections = () => {
+  const getTopSelections = (data = analysisData) => {
     const categories = ["race", "age", "gender"];
     return Object.fromEntries(
       categories.map((category) => {
-        const entries = Object.entries(analysisData?.[category] || {}).sort(
+        const entries = Object.entries(data?.[category] || {}).sort(
           (a, b) => b[1] - a[1]
         );
         return [category, entries[0]?.[0] || ""];
