@@ -284,6 +284,11 @@ function App() {
             <span className="rotating-frame rotating-frame--inner" />
           </div>
           <p className="analysis-loading__text">PREPARING YOUR ANALYSIS ...</p>
+          <div className="loading-dots" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
         </div>
       ) : step === "analysis" ? (
         <div className="analysis-screen">

@@ -285,7 +285,8 @@ button {
   display: block;
   margin: auto;
   border: 1px dotted var(--muted);
-  transform: rotate(45deg);
+  --frame-rot: 45deg;
+  transform: rotate(var(--frame-rot));
 }
 .source-rhombus--outer {
   width: calc(340 * var(--fx));
@@ -439,20 +440,21 @@ button {
   width: calc(var(--frame-side) * var(--fx));
   height: calc(var(--frame-side) * var(--fx));
   border: 1px dotted var(--muted);
+  transform: rotate(var(--frame-rot));
 }
 .rotating-frame--outer {
   --frame-side: 423;
+  --frame-rot: 30deg;
   opacity: 0.3;
-  transform: rotate(30deg);
 }
 .rotating-frame--middle {
   --frame-side: 345;
+  --frame-rot: 45deg;
   opacity: 0.6;
-  transform: rotate(45deg);
 }
 .rotating-frame--inner {
   --frame-side: 285;
-  transform: rotate(59deg);
+  --frame-rot: 59deg;
 }
 .camera-setup-screen {
   position: absolute;
@@ -675,9 +677,11 @@ button {
   top: 238px;
   left: 32px;
   right: 32px;
-  height: 544px;
+  /* bottom edge sits 34px above the footer row (Figma y 846 at 960) */
+  bottom: calc(var(--footer-bottom) + var(--footer-height) + 34px);
   display: grid;
   grid-template-columns: 208px minmax(0, 1fr) 448px;
+  grid-template-rows: minmax(0, 1fr);
   gap: 16px;
 }
 .screen-footer {
@@ -757,7 +761,6 @@ button {
 .prediction-focus {
   position: relative;
   min-width: 0;
-  height: 544px;
   grid-column: 2;
   border-top: 1px solid var(--ink);
   background: var(--panel);
@@ -776,13 +779,15 @@ button {
 .prediction-focus__suffix {
   text-transform: none;
 }
-/* ring: 384px, 16px from the panel's right edge, 24px above its bottom */
+/* ring: 384px, 16px from the panel's right edge, 24px above its bottom;
+   on shorter panels it shrinks to stay below the value (22 + 48 + 8px gap
+   + 12px svg overhang + 24px bottom = 114px) */
 .confidence-circle {
   position: absolute;
   right: 16px;
   bottom: 24px;
-  width: 384px;
-  height: 384px;
+  height: min(384px, calc(100% - 114px));
+  aspect-ratio: 1;
   display: grid;
   place-items: center;
 }
@@ -822,7 +827,7 @@ button {
   vertical-align: top;
 }
 .score-list {
-  height: 544px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   grid-column: 3;
@@ -892,4 +897,152 @@ button {
   font-family: inherit;
   font-weight: 600;
   cursor: pointer;
+}
+/*
+ * Motion and interactions, timed to the live Skinstric site. Everything
+ * here layers on top of the static layout: spins start from each
+ * frame's Figma angle (--frame-rot) and every transform is centered.
+ */
+@keyframes frame-spin {
+  from {
+    transform: rotate(var(--frame-rot));
+  }
+  to {
+    transform: rotate(calc(var(--frame-rot) + 360deg));
+  }
+}
+@keyframes fade-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+@keyframes grow-pulse {
+  0%,
+  100% {
+    transform: scale(0.95);
+  }
+  40% {
+    transform: scale(1.01);
+  }
+}
+@keyframes dot-bounce {
+  0%,
+  100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+/* 005 and 007: slow spin (50s / 70s / 85s) */
+.source-rhombus,
+.rotating-frame {
+  animation: frame-spin 50s linear infinite;
+}
+.source-rhombus--middle,
+.rotating-frame--middle {
+  animation-duration: 70s;
+}
+.source-rhombus--inner,
+.rotating-frame--inner {
+  animation-duration: 85s;
+}
+/* 011: fast spin (5s / 10s / 15s) */
+.analysis-loading .rotating-frame--outer {
+  animation-duration: 5s;
+}
+.analysis-loading .rotating-frame--middle {
+  animation-duration: 10s;
+}
+.analysis-loading .rotating-frame--inner {
+  animation-duration: 15s;
+}
+/* 005: icon hover scale; dimming on 006 fades in */
+.source-icon {
+  transition:
+    transform 700ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.source-callout {
+  transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.source-icon:hover {
+  transform: scale(1.08);
+}
+/* 007: icon grows and fades, status text fades */
+.camera-setup-icon {
+  animation:
+    grow-pulse 2s ease-in-out infinite,
+    fade-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.camera-setup-status {
+  animation: fade-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+/* 011: three bouncing dots under the text */
+.loading-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + 12px + 32px);
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0.3;
+  animation: dot-bounce 1s infinite;
+}
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.25s;
+}
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.5s;
+}
+/* 012: tiles darken on hover; only DEMOGRAPHICS scales and is active */
+.analysis-tile {
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.analysis-tile:hover {
+  background: #d1d5dc;
+}
+.demographics-tile:hover {
+  transform: scale(1.05);
+}
+.skin-tile,
+.concerns-tile,
+.weather-tile {
+  cursor: not-allowed;
+}
+/* 014: tab hover matches row hover; active tab and selected row go black */
+.category-tabs button:not(.active):hover {
+  background: var(--row-hover);
+}
+.category-tabs button.active:hover,
+.score-row.selected:hover {
+  background: #000000;
+}
+@media (prefers-reduced-motion: reduce) {
+  .source-rhombus,
+  .rotating-frame,
+  .camera-setup-icon,
+  .camera-setup-status,
+  .loading-dots span {
+    animation: none;
+  }
+  .source-icon,
+  .source-callout,
+  .analysis-tile,
+  .confidence-ring-value {
+    transition: none;
+  }
+  .source-icon:hover,
+  .demographics-tile:hover {
+    transform: none;
+  }
 }
