@@ -26,6 +26,8 @@ button {
   /* shared baseline for BACK and every screen's footer row */
   --footer-bottom: 36px;
   --footer-height: 44px;
+  /* 1 Figma px, scaled to fit the 1920x960 frame */
+  --fx: clamp(0.55px, min(calc(100vw / 1920), calc(100vh / 960)), 1.25px);
 }
 .header {
   height: 64px;
@@ -233,170 +235,188 @@ button {
   position: absolute;
   inset: 0;
 }
+/*
+ * 005/006: every size and offset below is in Figma px (1920x960 frame)
+ * multiplied by --fx. Each composition is a zero-size point at the
+ * icon center, and its parts are placed relative to that point.
+ */
+.source-composition {
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+.source-composition--camera {
+  left: 25%;
+}
+.source-composition--gallery {
+  left: 75%;
+}
 .source-option {
   position: absolute;
-  top: 25%;
-  height: 50.21%;
+  left: calc(-240 * var(--fx));
+  top: calc(-240 * var(--fx));
+  width: calc(480 * var(--fx));
+  height: calc(480 * var(--fx));
+  display: block;
+  padding: 0;
   border: none;
   background: transparent;
   color: var(--ink);
   cursor: pointer;
-  padding: 0;
 }
-.camera-permission-overlay {
-  position: absolute;
-  left: 31.55%;
-  top: 47.8%;
-  width: 18.35vw;
-  min-width: 264px;
-  background: var(--ink);
-  color: #ffffff;
-  z-index: 20;
-}
-.camera-permission-overlay > strong {
-  display: block;
-  padding: 18px 14px 34px;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
-  text-align: left;
-}
-.camera-permission-actions {
-  min-height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 0 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.45);
-}
-.camera-permission-actions button {
-  padding: 0 4px;
-  border: none;
-  background: transparent;
-  color: #ffffff;
-  font-family: inherit;
-  font-size: 10px;
-  line-height: 14px;
-  cursor: pointer;
-}
-.camera-option {
-  left: 12.45%;
-  width: 27.08%;
-}
-.source-option-dimmed {
-  opacity: 0.22;
+.source-option--dimmed {
   pointer-events: none;
   cursor: default;
 }
-.gallery-option {
-  left: 62.14%;
-  width: 25.42%;
+.source-option--dimmed .source-icon,
+.source-option--dimmed .source-callout {
+  opacity: 0.28;
 }
-.source-label {
+.source-rhombuses {
   position: absolute;
-  font-size: 14px;
-  line-height: 24px;
-  font-weight: 400;
-}
-.source-diamond {
-  position: relative;
-  width: 360px;
-  height: 360px;
-  display: grid;
-  place-items: center;
+  inset: 0;
+  display: block;
 }
 .source-rhombus {
   position: absolute;
   inset: 0;
+  display: block;
   margin: auto;
-  border: 2px dashed var(--muted);
+  border: 1px dotted var(--muted);
   transform: rotate(45deg);
 }
 .source-rhombus--outer {
-  width: 255px;
-  height: 255px;
+  width: calc(340 * var(--fx));
+  height: calc(340 * var(--fx));
   opacity: 0.3;
 }
 .source-rhombus--middle {
-  width: 228px;
-  height: 228px;
+  width: calc(308 * var(--fx));
+  height: calc(308 * var(--fx));
   opacity: 0.6;
 }
 .source-rhombus--inner {
-  width: 201px;
-  height: 201px;
+  width: calc(278 * var(--fx));
+  height: calc(278 * var(--fx));
 }
-.source-icon-image {
+.source-icon {
   position: absolute;
-  width: 7.08vw;
-  height: 7.08vw;
+  inset: 0;
+  display: block;
+  width: calc(136 * var(--fx));
+  height: calc(136 * var(--fx));
+  margin: auto;
+}
+.source-callout {
+  position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
+  display: block;
+  width: 0;
+  height: 0;
 }
-.camera-option .source-label {
-  top: 27.5%;
-  left: calc(59.9% - 24px);
-  width: 167px;
-  height: 48px;
+.source-callout__line {
+  position: absolute;
+  display: block;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: left center;
+}
+.source-callout__dot {
+  position: absolute;
+  display: block;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+.source-callout__text {
+  position: absolute;
+  display: block;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+/* camera: icon ring (+42,-39) up-right to dot (+104,-95) */
+.source-callout--camera .source-callout__line {
+  left: calc(42 * var(--fx));
+  top: calc(-39 * var(--fx));
+  width: calc(83.5 * var(--fx));
+  transform: rotate(-42.1deg);
+}
+.source-callout--camera .source-callout__dot {
+  left: calc(104 * var(--fx));
+  top: calc(-95 * var(--fx));
+}
+.source-callout--camera .source-callout__text {
+  left: calc(113 * var(--fx));
+  top: calc(-110 * var(--fx));
   text-align: left;
 }
-.gallery-option .source-label {
-  left: -16px;
-  top: 67.6%;
-  width: 136px;
-  height: 48px;
+/* gallery: point-mirror, dot (-101,+97) up-right to icon ring (-41,+43) */
+.source-callout--gallery .source-callout__line {
+  left: calc(-101 * var(--fx));
+  top: calc(97 * var(--fx));
+  width: calc(80.7 * var(--fx));
+  transform: rotate(-42deg);
+}
+.source-callout--gallery .source-callout__dot {
+  left: calc(-101 * var(--fx));
+  top: calc(97 * var(--fx));
+}
+.source-callout--gallery .source-callout__text {
+  right: calc(111 * var(--fx));
+  top: calc(87 * var(--fx));
   text-align: right;
 }
-.camera-option::after {
-  content: "";
+/* 006: box at Figma (592, 441), i.e. (+112, -39) from the camera center */
+.camera-permission-dialog {
   position: absolute;
-  left: 46.04%;
-  top: 41.91%;
-  width: 11.25%;
-  height: 1px;
+  left: calc(112 * var(--fx));
+  top: calc(-39 * var(--fx));
+  z-index: 20;
+  width: calc(352 * var(--fx));
+  min-width: 336px;
   background: var(--ink);
-  transform: rotate(-41.8deg);
-  transform-origin: left center;
+  color: #ffffff;
 }
-.camera-option::before {
-  content: "";
-  position: absolute;
-  left: 54.4%;
-  top: 33.8%;
-  width: 5px;
-  height: 5px;
-  border: 1px solid var(--ink);
-  border-radius: 50%;
-  background: #fff;
-  transform: translate(-50%, -50%);
-  z-index: 2;
+.camera-permission-dialog__title {
+  display: block;
+  min-height: 101px;
+  padding: 15px 16px 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  text-align: left;
 }
-.gallery-option::before {
-  content: "";
-  position: absolute;
-  left: 29.44%;
-  top: 70.61%;
-  width: 5px;
-  height: 5px;
-  border: 1px solid var(--ink);
-  border-radius: 50%;
-  background: #fff;
-  transform: translate(-50%, -50%);
-  z-index: 2;
+.camera-permission-dialog__actions {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 46px;
+  padding: 0 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
 }
-.gallery-option::after {
-  content: "";
-  position: absolute;
-  left: 29.44%;
-  top: 70.61%;
-  width: 13.59%;
-  height: 1px;
-  background: var(--ink);
-  transform: rotate(-41.84deg);
-  transform-origin: left center;
+.camera-permission-dialog__actions button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.camera-permission-dialog__deny {
+  color: var(--muted);
+}
+.camera-permission-dialog__allow {
+  color: #ffffff;
 }
 .camera-setup-screen {
   position: absolute;

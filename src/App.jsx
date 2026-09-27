@@ -504,75 +504,86 @@ function App() {
         </div>
       ) : step === "image-source" ? (
         <div className="image-source-screen">
-          <button
-            type="button"
-            className="source-option camera-option"
-            onClick={handleCameraStart}
-          >
-            <div className="source-diamond">
-              <div className="source-rhombus source-rhombus--outer" />
-              <div className="source-rhombus source-rhombus--middle" />
-              <div className="source-rhombus source-rhombus--inner" />
-              <img
-                className="source-icon-image"
-                src="/camera.svg"
-                alt="Camera"
-              />
-            </div>
-            <span className="source-label">
-              ALLOW A.I. TO
-              <br />
-              SCAN YOUR FACE
-            </span>
-          </button>
-          {cameraStage === "permission" && (
-            <div className="camera-permission-overlay">
-              <strong>ALLOW A.I. TO ACCESS YOUR CAMERA</strong>
-              <div className="camera-permission-actions">
-                <button
-                  type="button"
-                  onClick={() => setCameraStage("idle")}
-                >
-                  DENY
-                </button>
-                <button type="button" onClick={handleCameraAllow}>
-                  ALLOW
-                </button>
+          <div className="source-composition source-composition--camera">
+            <button
+              type="button"
+              className="source-option"
+              onClick={handleCameraStart}
+            >
+              <span className="source-rhombuses" aria-hidden="true">
+                <span className="source-rhombus source-rhombus--outer" />
+                <span className="source-rhombus source-rhombus--middle" />
+                <span className="source-rhombus source-rhombus--inner" />
+              </span>
+              <img className="source-icon" src="/camera.svg" alt="Camera" />
+              <span className="source-callout source-callout--camera">
+                <span className="source-callout__line" />
+                <span className="source-callout__dot" />
+                <span className="source-callout__text">
+                  ALLOW A.I.
+                  <br />
+                  TO SCAN YOUR FACE
+                </span>
+              </span>
+            </button>
+            {cameraStage === "permission" && (
+              <div className="camera-permission-dialog">
+                <strong className="camera-permission-dialog__title">
+                  ALLOW A.I. TO ACCESS YOUR CAMERA
+                </strong>
+                <div className="camera-permission-dialog__actions">
+                  <button
+                    type="button"
+                    className="camera-permission-dialog__deny"
+                    onClick={() => setCameraStage("idle")}
+                  >
+                    DENY
+                  </button>
+                  <button
+                    type="button"
+                    className="camera-permission-dialog__allow"
+                    onClick={handleCameraAllow}
+                  >
+                    ALLOW
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
-          <button
-            type="button"
-            className={`source-option gallery-option ${
-              cameraStage === "permission" ? "source-option-dimmed" : ""
-            }`}
-            aria-disabled={cameraStage === "permission"}
-            onClick={() => {
-              if (cameraStage === "permission") {
-                return;
-              }
-              if (fileInputRef.current) {
-                fileInputRef.current.value = "";
-                fileInputRef.current.click();
-              }
-            }}
-          >
-            <div className="source-diamond">
-              <div className="source-rhombus source-rhombus--outer" />
-              <div className="source-rhombus source-rhombus--middle" />
-              <div className="source-rhombus source-rhombus--inner" />
-              <img
-                className="source-icon-image"
-                src="/gallery.svg"
-                alt="Gallery"
-              />
-            </div>
-            <span className="source-label">
-              ALLOW A.I.
-              <br />
-              ACCESS GALLERY
-            </span>
-          </button>
+            )}
+          </div>
+          <div className="source-composition source-composition--gallery">
+            <button
+              type="button"
+              className={`source-option ${
+                cameraStage === "permission" ? "source-option--dimmed" : ""
+              }`}
+              aria-disabled={cameraStage === "permission"}
+              onClick={() => {
+                if (cameraStage === "permission") {
+                  return;
+                }
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = "";
+                  fileInputRef.current.click();
+                }
+              }}
+            >
+              <span className="source-rhombuses" aria-hidden="true">
+                <span className="source-rhombus source-rhombus--outer" />
+                <span className="source-rhombus source-rhombus--middle" />
+                <span className="source-rhombus source-rhombus--inner" />
+              </span>
+              <img className="source-icon" src="/gallery.svg" alt="Gallery" />
+              <span className="source-callout source-callout--gallery">
+                <span className="source-callout__line" />
+                <span className="source-callout__dot" />
+                <span className="source-callout__text">
+                  ALLOW A.I.
+                  <br />
+                  ACCESS GALLERY
+                </span>
+              </span>
+            </button>
+          </div>
         </div>
       ) : (
         <>
