@@ -3,7 +3,7 @@ import "./App.css";
 function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [name, setName] = useState("");
-  const [step, setStep] = useState("name");
+  const [step, setStep] = useState("landing");
   const [location, setLocation] = useState("");
   const [apiError, setApiError] = useState("");
   const fileInputRef = useRef(null);
@@ -131,6 +131,11 @@ function App() {
     }
     if (step === "location") {
       setStep("name");
+      setIsTyping(false);
+      return;
+    }
+    if (step === "name") {
+      setStep("landing");
       setIsTyping(false);
     }
   }
@@ -281,7 +286,8 @@ function App() {
           </div>
         </header>
       )}
-      {step !== "analysis" &&
+      {step !== "landing" &&
+        step !== "analysis" &&
         step !== "demographics" &&
         step !== "camera" &&
         !cameraActive &&
@@ -581,6 +587,56 @@ function App() {
             </button>
           </div>
         </div>
+      ) : step === "landing" ? (
+        <div className="landing-screen">
+          <div className="landing-side landing-side--left">
+            <span className="landing-side__frame" aria-hidden="true" />
+            <button
+              type="button"
+              className="landing-link landing-link--discover"
+            >
+              <span className="diamond-icon">
+                <span className="diamond-icon__arrow">◀</span>
+              </span>
+              <span>DISCOVER A.I.</span>
+            </button>
+          </div>
+          <div className="landing-side landing-side--right">
+            <span className="landing-side__frame" aria-hidden="true" />
+            <button
+              type="button"
+              className="landing-link landing-link--take"
+              onClick={() => setStep("name")}
+            >
+              <span>TAKE TEST</span>
+              <span className="diamond-icon">
+                <span className="diamond-icon__arrow">▶</span>
+              </span>
+            </button>
+          </div>
+          <div className="landing-frames" aria-hidden="true">
+            <span className="landing-frame landing-frame--outer" />
+            <span className="landing-frame landing-frame--inner" />
+          </div>
+          <h1 className="landing-heading">
+            Sophisticated
+            <span className="landing-heading__line">skincare</span>
+          </h1>
+          <p className="landing-description">
+            Skinstric developed an A.I. that creates a highly-personalized
+            routine tailored to what your skin needs.
+          </p>
+          <button
+            type="button"
+            className="landing-enter"
+            onClick={() => setStep("name")}
+          >
+            <span>ENTER EXPERIENCE</span>
+            <span className="diamond-icon">
+              <span className="diamond-icon__arrow">▶</span>
+            </span>
+          </button>
+        </div>
       ) : (
         <>
           <div className="diamond-wrap">
@@ -643,14 +699,16 @@ function App() {
           )}
         </>
       )}
-      {!(step === "camera" && cameraStage === "setup") && !isAnalyzing && (
-        <button type="button" className="back-button" onClick={handleBack}>
-          <span className="diamond-icon">
-            <span className="diamond-icon__arrow">◀</span>
-          </span>
-          <span className="back-text">BACK</span>
-        </button>
-      )}
+      {step !== "landing" &&
+        !(step === "camera" && cameraStage === "setup") &&
+        !isAnalyzing && (
+          <button type="button" className="back-button" onClick={handleBack}>
+            <span className="diamond-icon">
+              <span className="diamond-icon__arrow">◀</span>
+            </span>
+            <span className="back-text">BACK</span>
+          </button>
+        )}
       {apiError && <p className="api-error">{apiError}</p>}
       <input
         ref={fileInputRef}

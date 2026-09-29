@@ -232,6 +232,90 @@ button {
   color: #b00020;
   font-size: 14px;
 }
+/*
+ * 001: landing, measured from the live site at 1920x960. Each side is a
+ * 500px dotted square centered 34px outside the page edge (tip at 320px
+ * in), with its link icon centered 91px (left) and 113px (right) in.
+ */
+.landing-screen {
+  position: absolute;
+  inset: 0;
+}
+/* sides sit above the full-width heading so only the links take hits */
+.landing-side {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.landing-side__frame {
+  position: absolute;
+  top: calc(50% - 250px);
+  width: 500px;
+  height: 500px;
+  border: 1px dotted var(--muted);
+  transform: rotate(45deg);
+}
+.landing-side--left .landing-side__frame {
+  left: -284px;
+}
+.landing-side--right .landing-side__frame {
+  right: -284px;
+}
+.landing-link {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translateY(-50%);
+}
+.landing-link--discover {
+  left: 70px;
+}
+.landing-link--take {
+  right: 92px;
+}
+.landing-heading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 100px);
+  margin: 0;
+  font-size: 100px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  text-align: center;
+}
+.landing-heading__line {
+  display: block;
+}
+.landing-description {
+  position: absolute;
+  left: 44px;
+  bottom: 8vh;
+  width: 340px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+/* stacked-layout parts, shown only at 1024px and below */
+.landing-frames,
+.landing-enter {
+  display: none;
+}
 .image-source-screen {
   position: absolute;
   inset: 0;
@@ -1027,22 +1111,86 @@ button {
 .score-row.selected:hover {
   background: #000000;
 }
+/*
+ * 001: heading fades in over 1.5s. Hovering TAKE TEST fades the left
+ * side (0.4s) and slides the heading 20rem left, "skincare" 6rem further
+ * (0.7s, 0.1s delay); DISCOVER A.I. mirrors it with a 0.3s fade.
+ * The curve stands in for GSAP's power2.inOut.
+ */
+@keyframes landing-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+.landing-heading {
+  animation: landing-fade-in 1.5s cubic-bezier(0.45, 0, 0.55, 1) both;
+}
+.landing-side {
+  transition: opacity 400ms cubic-bezier(0.45, 0, 0.55, 1);
+}
+.landing-side--right {
+  transition-duration: 300ms;
+}
+.landing-heading,
+.landing-heading__line {
+  transition: transform 700ms cubic-bezier(0.45, 0, 0.55, 1) 100ms;
+}
+.landing-heading__line {
+  transition-delay: 10ms;
+}
+.landing-screen:has(.landing-link--take:hover) .landing-side--left,
+.landing-screen:has(.landing-link--discover:hover) .landing-side--right {
+  opacity: 0;
+}
+.landing-screen:has(.landing-link--take:hover) .landing-heading {
+  transform: translateX(-20rem);
+}
+.landing-screen:has(.landing-link--take:hover) .landing-heading__line {
+  transform: translateX(-6rem);
+  transition-delay: 100ms;
+}
+.landing-screen:has(.landing-link--discover:hover) .landing-heading {
+  transform: translateX(20rem);
+}
+.landing-screen:has(.landing-link--discover:hover) .landing-heading__line {
+  transform: translateX(6rem);
+}
+.landing-link .diamond-icon,
+.landing-enter {
+  transition: transform 300ms ease;
+}
+.landing-link:hover .diamond-icon {
+  transform: scale(1.1);
+}
+.landing-enter:hover {
+  transform: scale(1.05);
+}
 @media (prefers-reduced-motion: reduce) {
   .source-rhombus,
   .rotating-frame,
   .camera-setup-icon,
   .camera-setup-status,
-  .loading-dots span {
+  .loading-dots span,
+  .landing-heading {
     animation: none;
   }
   .source-icon,
   .source-callout,
   .analysis-tile,
-  .confidence-ring-value {
+  .confidence-ring-value,
+  .landing-side,
+  .landing-heading,
+  .landing-heading__line,
+  .landing-link .diamond-icon,
+  .landing-enter {
     transition: none;
   }
   .source-icon:hover,
-  .demographics-tile:hover {
+  .demographics-tile:hover,
+  .landing-screen:has(.landing-link:hover) .landing-heading,
+  .landing-screen:has(.landing-link:hover) .landing-heading__line,
+  .landing-link:hover .diamond-icon,
+  .landing-enter:hover {
     transform: none;
   }
 }
@@ -1057,6 +1205,88 @@ button {
     min-height: 100dvh;
     overflow-x: hidden;
     overflow-y: visible;
+  }
+  /* 001: like the live site, the side diamonds and links give way to a
+     centered stack (two dotted frames, copy, ENTER EXPERIENCE); the
+     bottom padding offsets the header so the stack sits mid-viewport */
+  .landing-screen {
+    position: relative;
+    inset: auto;
+    min-height: calc(100vh - 64px);
+    min-height: calc(100dvh - 64px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px 64px;
+  }
+  .landing-side {
+    display: none;
+  }
+  .landing-frames {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: calc(50% - 32px);
+    width: 0;
+    height: 0;
+  }
+  .landing-frame {
+    position: absolute;
+    left: calc(var(--landing-frame-side) / -2);
+    top: calc(var(--landing-frame-side) / -2);
+    display: block;
+    width: var(--landing-frame-side);
+    height: var(--landing-frame-side);
+    border: 1px dotted var(--muted);
+    transform: rotate(45deg);
+  }
+  .landing-frame--outer {
+    --landing-frame-side: 420px;
+  }
+  .landing-frame--inner {
+    --landing-frame-side: 350px;
+  }
+  .landing-heading {
+    position: relative;
+    top: auto;
+    font-size: 60px;
+  }
+  .landing-description {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: 30ch;
+    max-width: 100%;
+    margin-top: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 600;
+    text-transform: none;
+    text-align: center;
+    color: rgba(26, 27, 28, 0.51);
+  }
+  .landing-enter {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-top: 16px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .landing-enter .diamond-icon {
+    --diamond-side: 24px;
+  }
+  .landing-enter .diamond-icon__arrow {
+    font-size: 7px;
   }
   /* 007: --fx bottoms out at 0.55 here, so the icon and text rows use
      fixed offsets that clear the outer frame (about +/-159px) */
@@ -1199,6 +1429,20 @@ button {
   }
   .name-input {
     width: 100%;
+  }
+  /* 001: the live site scales its stack to 0.75 here */
+  .landing-frame--outer {
+    --landing-frame-side: 315px;
+  }
+  .landing-frame--inner {
+    --landing-frame-side: 263px;
+  }
+  .landing-heading {
+    font-size: 45px;
+  }
+  .landing-description {
+    font-size: 14px;
+    line-height: 20px;
   }
   .eyebrow {
     left: 16px;
