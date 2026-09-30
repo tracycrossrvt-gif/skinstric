@@ -175,23 +175,6 @@ button {
   text-align: center;
   color: #1a1b1c;
 }
-.location-complete {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.location-complete span {
-  font-size: 14px;
-  line-height: 24px;
-  color: rgba(26, 27, 28, 0.4);
-}
-.location-complete strong {
-  font-size: 60px;
-  line-height: 64px;
-  font-weight: 400;
-  letter-spacing: -0.07em;
-  border-bottom: 1px solid #1a1b1c;
-}
 .proceed-button {
   position: absolute;
   right: 32px;
@@ -1423,8 +1406,7 @@ button {
     white-space: nowrap;
   }
   .name-prompt-button strong,
-  .name-input,
-  .location-complete strong {
+  .name-input {
     font-size: clamp(32px, 10vw, 60px);
   }
   .name-input {
