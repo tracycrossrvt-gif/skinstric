@@ -175,14 +175,21 @@ button {
   text-align: center;
   color: #1a1b1c;
 }
+/* 003: mirrors BACK on the footer baseline */
 .proceed-button {
   position: absolute;
   right: 32px;
-  bottom: 24px;
+  bottom: var(--footer-bottom);
+  height: var(--footer-height);
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 0;
   border: none;
   background: transparent;
   color: var(--ink);
   cursor: pointer;
+  font-family: inherit;
 }
 .back-button {
   position: absolute;
@@ -199,7 +206,8 @@ button {
   cursor: pointer;
   font-family: inherit;
 }
-.back-text {
+.back-text,
+.proceed-text {
   font-size: 14px;
   line-height: 16px;
   font-weight: 600;
@@ -522,6 +530,70 @@ button {
 .rotating-frame--inner {
   --frame-side: 285;
   --frame-rot: 59deg;
+}
+/*
+ * 002/003: processing and thank-you. The frames reuse the rotating-frame
+ * spin (50s / 70s / 85s) at the live site's 762 / 682 / 602px tip-to-tip
+ * sizes and 190 / 185 / 0deg offsets, drawn like the intro diamonds and
+ * centered where they sit (47%). Text offsets come from the live layout.
+ */
+.status-screen {
+  position: absolute;
+  inset: 0;
+}
+.status-frames {
+  --fx: 1px;
+  top: 47%;
+}
+.status-frames .rotating-frame {
+  border: 2px dashed var(--muted);
+}
+.status-frames .rotating-frame--outer {
+  --frame-side: 539;
+  --frame-rot: 55deg;
+}
+.status-frames .rotating-frame--middle {
+  --frame-side: 482;
+  --frame-rot: 50deg;
+}
+.status-frames .rotating-frame--inner {
+  --frame-side: 426;
+  --frame-rot: 45deg;
+}
+.status-screen__message {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  text-align: center;
+}
+/* message center 40px above the frame center, dots 40px below the message */
+.status-screen--processing .status-screen__message {
+  top: calc(47% - 54px);
+  font-size: 18px;
+  line-height: 28px;
+  color: #6a7282;
+}
+.status-screen--processing .loading-dots {
+  top: calc(47% + 14px);
+}
+.status-screen--thank-you .status-screen__message {
+  top: calc(47% - 38px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.status-screen__message strong {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+  letter-spacing: 0.025em;
+}
+.status-screen__message span {
+  font-size: 18px;
+  line-height: 28px;
+  color: #4a5565;
 }
 .camera-setup-screen {
   position: absolute;
@@ -1148,6 +1220,13 @@ button {
 .landing-enter:hover {
   transform: scale(1.05);
 }
+/* 003: PROCEED's diamond grows on hover (live 0.85 -> 0.92) */
+.proceed-button .diamond-icon {
+  transition: transform 300ms ease;
+}
+.proceed-button:hover .diamond-icon {
+  transform: scale(1.08);
+}
 @media (prefers-reduced-motion: reduce) {
   .source-rhombus,
   .rotating-frame,
@@ -1165,7 +1244,8 @@ button {
   .landing-heading,
   .landing-heading__line,
   .landing-link .diamond-icon,
-  .landing-enter {
+  .landing-enter,
+  .proceed-button .diamond-icon {
     transition: none;
   }
   .source-icon:hover,
@@ -1173,13 +1253,15 @@ button {
   .landing-screen:has(.landing-link:hover) .landing-heading,
   .landing-screen:has(.landing-link:hover) .landing-heading__line,
   .landing-link:hover .diamond-icon,
-  .landing-enter:hover {
+  .landing-enter:hover,
+  .proceed-button:hover .diamond-icon {
     transform: none;
   }
 }
 /*
  * Responsive overrides. Desktop (>1024px) uses the base rules above
- * unchanged; tablet (<=1024px) and mobile (<=640px) only override here.
+ * unchanged; tablet (<=1024px) and mobile (<=640px) only override here,
+ * plus one <=767px rule for the Phase 1 status frames.
  */
 @media (max-width: 1024px) {
   .page {
@@ -1392,6 +1474,18 @@ button {
     grid-row: 2;
   }
 }
+/* 002/003: the live Phase 1 frames drop to 480 / 400 / 320px here */
+@media (max-width: 767px) {
+  .status-frames .rotating-frame--outer {
+    --frame-side: 339;
+  }
+  .status-frames .rotating-frame--middle {
+    --frame-side: 283;
+  }
+  .status-frames .rotating-frame--inner {
+    --frame-side: 226;
+  }
+}
 @media (max-width: 640px) {
   .header {
     padding: 0 16px;
@@ -1431,6 +1525,9 @@ button {
   }
   .back-button {
     left: 16px;
+  }
+  .proceed-button {
+    right: 16px;
   }
   /* 005/006: the two options stack in normal flow, with the label under
      each rhombus instead of a callout line */
