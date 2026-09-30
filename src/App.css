@@ -747,10 +747,12 @@ button {
   top: 9.154vw;
   left: 4.577vw;
 }
+/* shares BACK's footer row */
 .summary-button {
   position: absolute;
   right: 32px;
-  bottom: 24px;
+  bottom: var(--footer-bottom);
+  height: var(--footer-height);
   display: flex;
   align-items: center;
   gap: 18px;
