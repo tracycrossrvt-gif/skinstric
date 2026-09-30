@@ -3,7 +3,7 @@ import "./App.css";
 function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [name, setName] = useState("");
-  const [step, setStep] = useState("name");
+  const [step, setStep] = useState("landing");
   const [location, setLocation] = useState("");
   const [apiError, setApiError] = useState("");
   const fileInputRef = useRef(null);
@@ -61,11 +61,13 @@ function App() {
   function handleLocationKeyDown(event) {
     if (event.key === "Enter" && isValidLocation(location)) {
       setIsTyping(false);
-      setStep("complete");
+      handleProceed();
     }
   }
   async function handleProceed() {
     setApiError("");
+    setStep("processing");
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     try {
       const response = await fetch(
         "https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseOne",
@@ -85,14 +87,20 @@ function App() {
       if (!response.ok) {
         throw new Error("Failed to submit user information");
       }
-      setStep("image-source");
+      setStep("thank-you");
     } catch (error) {
       console.error("Phase 1 API error:", error);
       setApiError("Something went wrong. Please try again.");
+      setStep("location");
+      setIsTyping(true);
     }
   }
   function handleBack(event) {
     event.preventDefault();
+    // the Phase 1 request owns the step until it settles
+    if (step === "processing") {
+      return;
+    }
     if (step === "camera") {
       streamRef.current?.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -121,16 +129,21 @@ function App() {
         setCameraStage("idle");
         return;
       }
-      setStep("complete");
+      setStep("thank-you");
       return;
     }
-    if (step === "complete") {
+    if (step === "thank-you") {
       setStep("location");
       setIsTyping(false);
       return;
     }
     if (step === "location") {
       setStep("name");
+      setIsTyping(false);
+      return;
+    }
+    if (step === "name") {
+      setStep("landing");
       setIsTyping(false);
     }
   }
@@ -281,7 +294,8 @@ function App() {
           </div>
         </header>
       )}
-      {step !== "analysis" &&
+      {step !== "landing" &&
+        step !== "analysis" &&
         step !== "demographics" &&
         step !== "camera" &&
         !cameraActive &&
@@ -581,6 +595,92 @@ function App() {
             </button>
           </div>
         </div>
+      ) : step === "landing" ? (
+        <div className="landing-screen">
+          <div className="landing-side landing-side--left">
+            <span className="landing-side__frame" aria-hidden="true" />
+            <button
+              type="button"
+              className="landing-link landing-link--discover"
+            >
+              <span className="diamond-icon">
+                <span className="diamond-icon__arrow">◀</span>
+              </span>
+              <span>DISCOVER A.I.</span>
+            </button>
+          </div>
+          <div className="landing-side landing-side--right">
+            <span className="landing-side__frame" aria-hidden="true" />
+            <button
+              type="button"
+              className="landing-link landing-link--take"
+              onClick={() => setStep("name")}
+            >
+              <span>TAKE TEST</span>
+              <span className="diamond-icon">
+                <span className="diamond-icon__arrow">▶</span>
+              </span>
+            </button>
+          </div>
+          <div className="landing-frames" aria-hidden="true">
+            <span className="landing-frame landing-frame--outer" />
+            <span className="landing-frame landing-frame--inner" />
+          </div>
+          <h1 className="landing-heading">
+            Sophisticated
+            <span className="landing-heading__line">skincare</span>
+          </h1>
+          <p className="landing-description">
+            Skinstric developed an A.I. that creates a highly-personalized
+            routine tailored to what your skin needs.
+          </p>
+          <button
+            type="button"
+            className="landing-enter"
+            onClick={() => setStep("name")}
+          >
+            <span>ENTER EXPERIENCE</span>
+            <span className="diamond-icon">
+              <span className="diamond-icon__arrow">▶</span>
+            </span>
+          </button>
+        </div>
+      ) : step === "processing" ? (
+        <div className="status-screen status-screen--processing">
+          <div className="rotating-frames status-frames" aria-hidden="true">
+            <span className="rotating-frame rotating-frame--outer" />
+            <span className="rotating-frame rotating-frame--middle" />
+            <span className="rotating-frame rotating-frame--inner" />
+          </div>
+          <p className="status-screen__message">Processing submission</p>
+          <div className="loading-dots" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+        </div>
+      ) : step === "thank-you" ? (
+        <div className="status-screen status-screen--thank-you">
+          <div className="rotating-frames status-frames" aria-hidden="true">
+            <span className="rotating-frame rotating-frame--outer" />
+            <span className="rotating-frame rotating-frame--middle" />
+            <span className="rotating-frame rotating-frame--inner" />
+          </div>
+          <div className="status-screen__message">
+            <strong>Thank you!</strong>
+            <span>Proceed for the next step</span>
+          </div>
+          <button
+            type="button"
+            className="proceed-button"
+            onClick={() => setStep("image-source")}
+          >
+            <span className="proceed-text">PROCEED</span>
+            <span className="diamond-icon">
+              <span className="diamond-icon__arrow">▶</span>
+            </span>
+          </button>
+        </div>
       ) : (
         <>
           <div className="diamond-wrap">
@@ -609,48 +709,39 @@ function App() {
                   autoFocus
                 />
               )
-            ) : step === "location" ? (
-              !isTyping ? (
-                <button
-                  className="name-prompt-button"
-                  onClick={() => setIsTyping(true)}
-                >
-                  <span>CLICK TO TYPE</span>
-                  <strong>Where are you from?</strong>
-                </button>
-              ) : (
-                <input
-                  className="name-input"
-                  type="text"
-                  value={location}
-                  onChange={(event) => setLocation(event.target.value)}
-                  onKeyDown={handleLocationKeyDown}
-                  placeholder="Where are you from?"
-                  autoFocus
-                />
-              )
+            ) : !isTyping ? (
+              <button
+                className="name-prompt-button"
+                onClick={() => setIsTyping(true)}
+              >
+                <span>CLICK TO TYPE</span>
+                <strong>Where are you from?</strong>
+              </button>
             ) : (
-              <div className="location-complete">
-                <span>WHERE ARE YOU FROM?</span>
-                <strong>{location}</strong>
-              </div>
+              <input
+                className="name-input"
+                type="text"
+                value={location}
+                onChange={(event) => setLocation(event.target.value)}
+                onKeyDown={handleLocationKeyDown}
+                placeholder="Where are you from?"
+                autoFocus
+              />
             )}
           </div>
-          {step === "complete" && (
-            <button className="proceed-button" onClick={handleProceed}>
-              PROCEED ◇
-            </button>
-          )}
         </>
       )}
-      {!(step === "camera" && cameraStage === "setup") && !isAnalyzing && (
-        <button type="button" className="back-button" onClick={handleBack}>
-          <span className="diamond-icon">
-            <span className="diamond-icon__arrow">◀</span>
-          </span>
-          <span className="back-text">BACK</span>
-        </button>
-      )}
+      {step !== "landing" &&
+        step !== "processing" &&
+        !(step === "camera" && cameraStage === "setup") &&
+        !isAnalyzing && (
+          <button type="button" className="back-button" onClick={handleBack}>
+            <span className="diamond-icon">
+              <span className="diamond-icon__arrow">◀</span>
+            </span>
+            <span className="back-text">BACK</span>
+          </button>
+        )}
       {apiError && <p className="api-error">{apiError}</p>}
       <input
         ref={fileInputRef}

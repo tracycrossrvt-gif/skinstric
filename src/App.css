@@ -175,31 +175,21 @@ button {
   text-align: center;
   color: #1a1b1c;
 }
-.location-complete {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.location-complete span {
-  font-size: 14px;
-  line-height: 24px;
-  color: rgba(26, 27, 28, 0.4);
-}
-.location-complete strong {
-  font-size: 60px;
-  line-height: 64px;
-  font-weight: 400;
-  letter-spacing: -0.07em;
-  border-bottom: 1px solid #1a1b1c;
-}
+/* 003: mirrors BACK on the footer baseline */
 .proceed-button {
   position: absolute;
   right: 32px;
-  bottom: 24px;
+  bottom: var(--footer-bottom);
+  height: var(--footer-height);
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 0;
   border: none;
   background: transparent;
   color: var(--ink);
   cursor: pointer;
+  font-family: inherit;
 }
 .back-button {
   position: absolute;
@@ -216,7 +206,8 @@ button {
   cursor: pointer;
   font-family: inherit;
 }
-.back-text {
+.back-text,
+.proceed-text {
   font-size: 14px;
   line-height: 16px;
   font-weight: 600;
@@ -231,6 +222,90 @@ button {
   margin: 0;
   color: #b00020;
   font-size: 14px;
+}
+/*
+ * 001: landing, measured from the live site at 1920x960. Each side is a
+ * 500px dotted square centered 34px outside the page edge (tip at 320px
+ * in), with its link icon centered 91px (left) and 113px (right) in.
+ */
+.landing-screen {
+  position: absolute;
+  inset: 0;
+}
+/* sides sit above the full-width heading so only the links take hits */
+.landing-side {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.landing-side__frame {
+  position: absolute;
+  top: calc(50% - 250px);
+  width: 500px;
+  height: 500px;
+  border: 1px dotted var(--muted);
+  transform: rotate(45deg);
+}
+.landing-side--left .landing-side__frame {
+  left: -284px;
+}
+.landing-side--right .landing-side__frame {
+  right: -284px;
+}
+.landing-link {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translateY(-50%);
+}
+.landing-link--discover {
+  left: 70px;
+}
+.landing-link--take {
+  right: 92px;
+}
+.landing-heading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 100px);
+  margin: 0;
+  font-size: 100px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  text-align: center;
+}
+.landing-heading__line {
+  display: block;
+}
+.landing-description {
+  position: absolute;
+  left: 44px;
+  bottom: 8vh;
+  width: 340px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+/* stacked-layout parts, shown only at 1024px and below */
+.landing-frames,
+.landing-enter {
+  display: none;
 }
 .image-source-screen {
   position: absolute;
@@ -456,6 +531,70 @@ button {
   --frame-side: 285;
   --frame-rot: 59deg;
 }
+/*
+ * 002/003: processing and thank-you. The frames reuse the rotating-frame
+ * spin (50s / 70s / 85s) at the live site's 762 / 682 / 602px tip-to-tip
+ * sizes and 190 / 185 / 0deg offsets, drawn like the intro diamonds and
+ * centered where they sit (47%). Text offsets come from the live layout.
+ */
+.status-screen {
+  position: absolute;
+  inset: 0;
+}
+.status-frames {
+  --fx: 1px;
+  top: 47%;
+}
+.status-frames .rotating-frame {
+  border: 2px dashed var(--muted);
+}
+.status-frames .rotating-frame--outer {
+  --frame-side: 539;
+  --frame-rot: 55deg;
+}
+.status-frames .rotating-frame--middle {
+  --frame-side: 482;
+  --frame-rot: 50deg;
+}
+.status-frames .rotating-frame--inner {
+  --frame-side: 426;
+  --frame-rot: 45deg;
+}
+.status-screen__message {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  text-align: center;
+}
+/* message center 40px above the frame center, dots 40px below the message */
+.status-screen--processing .status-screen__message {
+  top: calc(47% - 54px);
+  font-size: 18px;
+  line-height: 28px;
+  color: #6a7282;
+}
+.status-screen--processing .loading-dots {
+  top: calc(47% + 14px);
+}
+.status-screen--thank-you .status-screen__message {
+  top: calc(47% - 38px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.status-screen__message strong {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+  letter-spacing: 0.025em;
+}
+.status-screen__message span {
+  font-size: 18px;
+  line-height: 28px;
+  color: #4a5565;
+}
 .camera-setup-screen {
   position: absolute;
   inset: 0;
@@ -541,8 +680,8 @@ button {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 16.337vw;
-  height: 16.337vw;
+  width: 17.971vw;
+  height: 17.971vw;
   transform: translate(-50%, -50%);
 }
 .analysis-frame {
@@ -570,8 +709,8 @@ button {
 }
 .analysis-tile {
   position: absolute;
-  width: 8.015vw;
-  height: 8.015vw;
+  width: 8.817vw;
+  height: 8.817vw;
   border: none;
   background: #f1f1f1;
   color: var(--ink);
@@ -593,25 +732,27 @@ button {
 }
 .demographics-tile {
   top: 0;
-  left: 4.161vw;
+  left: 4.577vw;
   background: #dedede;
 }
 .skin-tile {
-  top: 4.161vw;
+  top: 4.577vw;
   left: 0;
 }
 .concerns-tile {
-  top: 4.161vw;
-  left: 8.322vw;
+  top: 4.577vw;
+  left: 9.154vw;
 }
 .weather-tile {
-  top: 8.322vw;
-  left: 4.161vw;
+  top: 9.154vw;
+  left: 4.577vw;
 }
+/* shares BACK's footer row */
 .summary-button {
   position: absolute;
   right: 32px;
-  bottom: 24px;
+  bottom: var(--footer-bottom);
+  height: var(--footer-height);
   display: flex;
   align-items: center;
   gap: 18px;
@@ -1027,28 +1168,102 @@ button {
 .score-row.selected:hover {
   background: #000000;
 }
+/*
+ * 001: heading fades in over 1.5s. Hovering TAKE TEST fades the left
+ * side (0.4s) and slides the heading 20rem left, "skincare" 6rem further
+ * (0.7s, 0.1s delay); DISCOVER A.I. mirrors it with a 0.3s fade.
+ * The curve stands in for GSAP's power2.inOut.
+ */
+@keyframes landing-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+.landing-heading {
+  animation: landing-fade-in 1.5s cubic-bezier(0.45, 0, 0.55, 1) both;
+}
+.landing-side {
+  transition: opacity 400ms cubic-bezier(0.45, 0, 0.55, 1);
+}
+.landing-side--right {
+  transition-duration: 300ms;
+}
+.landing-heading,
+.landing-heading__line {
+  transition: transform 700ms cubic-bezier(0.45, 0, 0.55, 1) 100ms;
+}
+.landing-heading__line {
+  transition-delay: 10ms;
+}
+.landing-screen:has(.landing-link--take:hover) .landing-side--left,
+.landing-screen:has(.landing-link--discover:hover) .landing-side--right {
+  opacity: 0;
+}
+.landing-screen:has(.landing-link--take:hover) .landing-heading {
+  transform: translateX(-20rem);
+}
+.landing-screen:has(.landing-link--take:hover) .landing-heading__line {
+  transform: translateX(-6rem);
+  transition-delay: 100ms;
+}
+.landing-screen:has(.landing-link--discover:hover) .landing-heading {
+  transform: translateX(20rem);
+}
+.landing-screen:has(.landing-link--discover:hover) .landing-heading__line {
+  transform: translateX(6rem);
+}
+.landing-link .diamond-icon,
+.landing-enter {
+  transition: transform 300ms ease;
+}
+.landing-link:hover .diamond-icon {
+  transform: scale(1.1);
+}
+.landing-enter:hover {
+  transform: scale(1.05);
+}
+/* 003: PROCEED's diamond grows on hover (live 0.85 -> 0.92) */
+.proceed-button .diamond-icon {
+  transition: transform 300ms ease;
+}
+.proceed-button:hover .diamond-icon {
+  transform: scale(1.08);
+}
 @media (prefers-reduced-motion: reduce) {
   .source-rhombus,
   .rotating-frame,
   .camera-setup-icon,
   .camera-setup-status,
-  .loading-dots span {
+  .loading-dots span,
+  .landing-heading {
     animation: none;
   }
   .source-icon,
   .source-callout,
   .analysis-tile,
-  .confidence-ring-value {
+  .confidence-ring-value,
+  .landing-side,
+  .landing-heading,
+  .landing-heading__line,
+  .landing-link .diamond-icon,
+  .landing-enter,
+  .proceed-button .diamond-icon {
     transition: none;
   }
   .source-icon:hover,
-  .demographics-tile:hover {
+  .demographics-tile:hover,
+  .landing-screen:has(.landing-link:hover) .landing-heading,
+  .landing-screen:has(.landing-link:hover) .landing-heading__line,
+  .landing-link:hover .diamond-icon,
+  .landing-enter:hover,
+  .proceed-button:hover .diamond-icon {
     transform: none;
   }
 }
 /*
  * Responsive overrides. Desktop (>1024px) uses the base rules above
- * unchanged; tablet (<=1024px) and mobile (<=640px) only override here.
+ * unchanged; tablet (<=1024px) and mobile (<=640px) only override here,
+ * plus one <=767px rule for the Phase 1 status frames.
  */
 @media (max-width: 1024px) {
   .page {
@@ -1057,6 +1272,88 @@ button {
     min-height: 100dvh;
     overflow-x: hidden;
     overflow-y: visible;
+  }
+  /* 001: like the live site, the side diamonds and links give way to a
+     centered stack (two dotted frames, copy, ENTER EXPERIENCE); the
+     bottom padding offsets the header so the stack sits mid-viewport */
+  .landing-screen {
+    position: relative;
+    inset: auto;
+    min-height: calc(100vh - 64px);
+    min-height: calc(100dvh - 64px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px 64px;
+  }
+  .landing-side {
+    display: none;
+  }
+  .landing-frames {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: calc(50% - 32px);
+    width: 0;
+    height: 0;
+  }
+  .landing-frame {
+    position: absolute;
+    left: calc(var(--landing-frame-side) / -2);
+    top: calc(var(--landing-frame-side) / -2);
+    display: block;
+    width: var(--landing-frame-side);
+    height: var(--landing-frame-side);
+    border: 1px dotted var(--muted);
+    transform: rotate(45deg);
+  }
+  .landing-frame--outer {
+    --landing-frame-side: 420px;
+  }
+  .landing-frame--inner {
+    --landing-frame-side: 350px;
+  }
+  .landing-heading {
+    position: relative;
+    top: auto;
+    font-size: 60px;
+  }
+  .landing-description {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: 30ch;
+    max-width: 100%;
+    margin-top: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 600;
+    text-transform: none;
+    text-align: center;
+    color: rgba(26, 27, 28, 0.51);
+  }
+  .landing-enter {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-top: 16px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .landing-enter .diamond-icon {
+    --diamond-side: 24px;
+  }
+  .landing-enter .diamond-icon__arrow {
+    font-size: 7px;
   }
   /* 007: --fx bottoms out at 0.55 here, so the icon and text rows use
      fixed offsets that clear the outer frame (about +/-159px) */
@@ -1071,8 +1368,8 @@ button {
   .camera-tips {
     top: calc(50% + 170px);
   }
-  /* 012: the vw-based hub is rebuilt on --hu (1 desktop vw), capped so
-     the outer frame fits the viewport width */
+  /* 012: the vw-based hub is rebuilt on --hu at its original (pre-1.1x)
+     proportions, capped so the outer frame fits the viewport width */
   .analysis-screen {
     --hu: min(16px, calc((100vw - 32px) / 28.06));
   }
@@ -1179,6 +1476,18 @@ button {
     grid-row: 2;
   }
 }
+/* 002/003: the live Phase 1 frames drop to 480 / 400 / 320px here */
+@media (max-width: 767px) {
+  .status-frames .rotating-frame--outer {
+    --frame-side: 339;
+  }
+  .status-frames .rotating-frame--middle {
+    --frame-side: 283;
+  }
+  .status-frames .rotating-frame--inner {
+    --frame-side: 226;
+  }
+}
 @media (max-width: 640px) {
   .header {
     padding: 0 16px;
@@ -1193,18 +1502,34 @@ button {
     white-space: nowrap;
   }
   .name-prompt-button strong,
-  .name-input,
-  .location-complete strong {
+  .name-input {
     font-size: clamp(32px, 10vw, 60px);
   }
   .name-input {
     width: 100%;
+  }
+  /* 001: the live site scales its stack to 0.75 here */
+  .landing-frame--outer {
+    --landing-frame-side: 315px;
+  }
+  .landing-frame--inner {
+    --landing-frame-side: 263px;
+  }
+  .landing-heading {
+    font-size: 45px;
+  }
+  .landing-description {
+    font-size: 14px;
+    line-height: 20px;
   }
   .eyebrow {
     left: 16px;
   }
   .back-button {
     left: 16px;
+  }
+  .proceed-button {
+    right: 16px;
   }
   /* 005/006: the two options stack in normal flow, with the label under
      each rhombus instead of a callout line */
@@ -1266,13 +1591,37 @@ button {
     align-items: center;
     gap: 8px;
   }
-  /* 012: tiles are about 94-100px here, so labels drop to 10-11px to fit */
+  /* 012: the hub shrinks to 0.9 of its tablet size (tiles about 74-115px);
+     labels drop to 8-11px on a tighter line, with no button padding so
+     DEMOGRAPHICS stays centered, to fit inside the diamonds down to 320px */
   .analysis-heading {
     left: 16px;
   }
+  .analysis-grid {
+    width: calc(14.703 * var(--hu));
+    height: calc(14.703 * var(--hu));
+  }
   .analysis-tile {
-    font-size: clamp(10px, 2.8vw, 11px);
-    line-height: 18px;
+    width: calc(7.214 * var(--hu));
+    height: calc(7.214 * var(--hu));
+    padding: 0;
+    font-size: clamp(8px, 2.5vw, 11px);
+    line-height: clamp(12px, 4vw, 16px);
+    letter-spacing: -0.04em;
+  }
+  .demographics-tile {
+    left: calc(3.745 * var(--hu));
+  }
+  .skin-tile {
+    top: calc(3.745 * var(--hu));
+  }
+  .concerns-tile {
+    top: calc(3.745 * var(--hu));
+    left: calc(7.49 * var(--hu));
+  }
+  .weather-tile {
+    top: calc(7.49 * var(--hu));
+    left: calc(3.745 * var(--hu));
   }
   .summary-button {
     right: 16px;
