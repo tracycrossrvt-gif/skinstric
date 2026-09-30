@@ -680,8 +680,8 @@ button {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 16.337vw;
-  height: 16.337vw;
+  width: 17.971vw;
+  height: 17.971vw;
   transform: translate(-50%, -50%);
 }
 .analysis-frame {
@@ -709,8 +709,8 @@ button {
 }
 .analysis-tile {
   position: absolute;
-  width: 8.015vw;
-  height: 8.015vw;
+  width: 8.817vw;
+  height: 8.817vw;
   border: none;
   background: #f1f1f1;
   color: var(--ink);
@@ -732,20 +732,20 @@ button {
 }
 .demographics-tile {
   top: 0;
-  left: 4.161vw;
+  left: 4.577vw;
   background: #dedede;
 }
 .skin-tile {
-  top: 4.161vw;
+  top: 4.577vw;
   left: 0;
 }
 .concerns-tile {
-  top: 4.161vw;
-  left: 8.322vw;
+  top: 4.577vw;
+  left: 9.154vw;
 }
 .weather-tile {
-  top: 8.322vw;
-  left: 4.161vw;
+  top: 9.154vw;
+  left: 4.577vw;
 }
 .summary-button {
   position: absolute;
@@ -1366,8 +1366,8 @@ button {
   .camera-tips {
     top: calc(50% + 170px);
   }
-  /* 012: the vw-based hub is rebuilt on --hu (1 desktop vw), capped so
-     the outer frame fits the viewport width */
+  /* 012: the vw-based hub is rebuilt on --hu at its original (pre-1.1x)
+     proportions, capped so the outer frame fits the viewport width */
   .analysis-screen {
     --hu: min(16px, calc((100vw - 32px) / 28.06));
   }
@@ -1589,13 +1589,37 @@ button {
     align-items: center;
     gap: 8px;
   }
-  /* 012: tiles are about 94-100px here, so labels drop to 10-11px to fit */
+  /* 012: the hub shrinks to 0.9 of its tablet size (tiles about 74-115px);
+     labels drop to 8-11px on a tighter line, with no button padding so
+     DEMOGRAPHICS stays centered, to fit inside the diamonds down to 320px */
   .analysis-heading {
     left: 16px;
   }
+  .analysis-grid {
+    width: calc(14.703 * var(--hu));
+    height: calc(14.703 * var(--hu));
+  }
   .analysis-tile {
-    font-size: clamp(10px, 2.8vw, 11px);
-    line-height: 18px;
+    width: calc(7.214 * var(--hu));
+    height: calc(7.214 * var(--hu));
+    padding: 0;
+    font-size: clamp(8px, 2.5vw, 11px);
+    line-height: clamp(12px, 4vw, 16px);
+    letter-spacing: -0.04em;
+  }
+  .demographics-tile {
+    left: calc(3.745 * var(--hu));
+  }
+  .skin-tile {
+    top: calc(3.745 * var(--hu));
+  }
+  .concerns-tile {
+    top: calc(3.745 * var(--hu));
+    left: calc(7.49 * var(--hu));
+  }
+  .weather-tile {
+    top: calc(7.49 * var(--hu));
+    left: calc(3.745 * var(--hu));
   }
   .summary-button {
     right: 16px;
