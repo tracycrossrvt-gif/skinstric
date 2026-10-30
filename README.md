@@ -1,16 +1,52 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+8
+Skinstric AI — Interactive Analysis Experience
+# Skinstric AI — Interactive Analysis Experience
 
-Currently, two official plugins are available:
+🌐 **Live Demo:** [View Skinstric](https://skinstric-murex.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+💻 **Source Code:** [GitHub Repository](https://github.com/tracycrossrvt-gif/skinstric)
+A responsive, multi-step React application guiding users from onboarding to selfie capture or upload and an API-driven analysis interface.
 
-## React Compiler
+This repository showcases frontend work completed as part of my paid Skinstric development internship, with an emphasis on functional user flows, asynchronous API integration, and clear feedback through the experience.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Features
+Guided onboarding with name and location validation
+Multi-step navigation with context-aware back-button behavior
+Profile-information submission to the Skinstric Phase One API
+Selfie upload and browser camera capture using getUserMedia
+Image submission to the Skinstric Phase Two API
+Loading, permission, and error handling for asynchronous operations
+Analysis dashboard with returned demographic estimates
+Interactive category selection and confidence visualizations
+Camera stream cleanup when leaving the capture experience
+My Contributions
+Built React user interfaces and screen transitions for onboarding and analysis
+Implemented input validation, React state, and conditional rendering
+Integrated API requests using fetch, JSON payloads, and error handling
+Implemented browser camera access, selfie capture, and image-upload flows
+Rendered returned analysis scores in selectable, interactive views
+Developed responsive styling and visual interactions for the intended interface
+Technology
+Frontend: React, JavaScript, HTML, CSS
+Build tooling: Vite, ESLint
+Browser APIs: MediaDevices (getUserMedia), Canvas, FileReader
+Integration: HTTP APIs using fetch
+Run Locally
+npm install
+npm run dev
+To check the build and linting:
 
-## Expanding the ESLint configuration
+npm run build
+npm run lint
+Camera access requires browser permission and generally HTTPS or localhost. The analysis flows depend on external Skinstric endpoints, whose availability is outside this repository's control.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Scope and Limitations
+This repository contains a frontend implementation integrating with existing Skinstric API endpoints. It does not contain the underlying image-analysis model or backend implementation. The analysis results are outputs returned by the API, not independently validated clinical or demographic findings.
+
+Some displayed analysis tiles and summary controls are currently presentational and do not open additional feature flows.
+
+Author
+Tracy Cross — Software Developer
+Portfolio · GitHub · LinkedIn
+
